@@ -1,0 +1,45 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: ./docker/backend/Dockerfile
+      args:
+        ENABLE_XDEBUG: "1"
+    container_name: backend
+    working_dir: /var/www/backend
+    environment:
+      APP_ENV: dev
+      XDEBUG_MODE: "develop,debug"
+      XDEBUG_CONFIG: "client_host=host.docker.internal client_port=9003"
+    volumes:
+      - ./backend:/var/www/backend:delegated
+      - ./docker/backend/dev.ini:/usr/locale/etc/php/conf.d/dev.ini:ro
+    expose:
+      - "9000"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ../docker/frontend/Dockerfile
+    container_name: frontend
+    working_dir: /app
+    volumes:
+      - ./frontend/src:/app/src:delegated
+      #- ./frontend/dist:/app/dist:delegated
+      - ./frontend/angular.json:/app/angular.json:delegated
+      - ./frontend/tsconfig.json:/app/tsconfig.json:delegated
+    expose:
+      - "4200"
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: web
+    depends_on:
+      - backend
+      - frontend
+    ports:
+      - "8080:80"
+    volumes:
+      - ./backend:/var/www/backend:ro
+      - ./frontend/dist:/usr/share/nginx/html:delegated
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro

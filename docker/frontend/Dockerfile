@@ -2,10 +2,9 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-COPY . /app
+COPY package*.json ./
+RUN npm ci
 
-RUN npm install -g @angular/cli
+COPY . .
 
-RUN npm install
-
-CMD ["ng", "serve", "--host", "0.0.0.0", "--port", "4200", "--poll", "200"]
+CMD ["npx", "ng", "build", "--watch", "--poll", "200"]

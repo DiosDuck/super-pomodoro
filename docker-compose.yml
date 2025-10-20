@@ -23,11 +23,11 @@ services:
       dockerfile: ../docker/frontend/Dockerfile
     container_name: frontend
     working_dir: /app
-    volumes:
-      - ./frontend/src:/app/src:delegated
+    #volumes:
+      #- ./frontend/src:/app/src:delegated
       #- ./frontend/dist:/app/dist:delegated
-      - ./frontend/angular.json:/app/angular.json:delegated
-      - ./frontend/tsconfig.json:/app/tsconfig.json:delegated
+      #- ./frontend/angular.json:/app/angular.json:delegated
+      #- ./frontend/tsconfig.json:/app/tsconfig.json:delegated
     expose:
       - "4200"
 

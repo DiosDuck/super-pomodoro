@@ -1,10 +1,7 @@
 FROM node:20-alpine
 
+RUN npm install -g @angular/cli
+
 WORKDIR /app
-
-COPY . .
-RUN npm ci
-
-RUN npm run build
 
 CMD ["npx", "ng", "build", "--watch", "--poll", "200"]

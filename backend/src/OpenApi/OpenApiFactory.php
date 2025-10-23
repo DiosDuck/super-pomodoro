@@ -8,6 +8,7 @@ use ApiPlatform\OpenApi\Model\Tag;
 use ApiPlatform\OpenApi\Model\Operation;
 use ApiPlatform\OpenApi\Model\PathItem;
 use ApiPlatform\OpenApi\Model\Response;
+use App\OpenApi\Model\Schema;
 use Symfony\Component\DependencyInjection\Attribute\AsDecorator;
 
 #[AsDecorator(decorates: 'api_platform.openapi.factory')]
@@ -28,20 +29,19 @@ class OpenApiFactory implements OpenApiFactoryInterface {
         $tag = new Tag(name: 'Ping', description: 'Ping endpoint, used for checking if server works');
         $openApi = $this->addComponent(
             $openApi, 'Ping', 
-            [
-                'type' => 'object',
-                'description' => 'Used for testing if API works',
-                'required' => ['message'],
-                'properties' => [
-                    'message' => ['type' => 'string', 'example' => 'ok'],
-                ],
-            ],
+            new Schema(
+                type: 'object', 
+                description: 'Used for testing if API works',
+                properties: [
+                    'message' => new Schema(
+                        type: 'string',
+                        example: 'OK',
+                    ),
+                ]
+            ),
         );
 
-        $openApi = $this->addTag(
-            $openApi,
-            $tag,
-        );
+        $openApi = $this->addTag($openApi, $tag);
 
         $openApi = $this->addEndpoint(
             $openApi,
@@ -57,7 +57,7 @@ class OpenApiFactory implements OpenApiFactoryInterface {
                             'description' => 'OK',
                             'content' => [
                                 'application/json' => [
-                                    'schema' => ['$ref' => '#/components/schemas/Ping'],
+                                    'schema' => (new Schema(ref: '#/components/schemas/Ping'))->toArray(),
                                 ]
                             ]
                         ]
@@ -70,11 +70,11 @@ class OpenApiFactory implements OpenApiFactoryInterface {
         return $openApi;
     }
 
-    private function addComponent(OpenApi $openApi, string $name, array $schema): OpenApi
+    private function addComponent(OpenApi $openApi, string $name, Schema $schema): OpenApi
     {
         $components = $openApi->getComponents();
         $schemas = $components->getSchemas() ?? [];
-        $schemas[$name] = $schema;
+        $schemas[$name] = $schema->toArray();
         $openApi = $openApi->withComponents($components->withSchemas($schemas));
 
         return $openApi;

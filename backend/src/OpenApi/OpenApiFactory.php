@@ -5,10 +5,15 @@ namespace App\OpenApi;
 use ApiPlatform\OpenApi\Factory\OpenApiFactoryInterface;
 use ApiPlatform\OpenApi\OpenApi;
 use ApiPlatform\OpenApi\Model\Tag;
-use ApiPlatform\OpenApi\Model\Operation;
 use ApiPlatform\OpenApi\Model\PathItem;
-use ApiPlatform\OpenApi\Model\Response;
+use App\OpenApi\Model\Operation;
+use App\OpenApi\Model\OperationCollection;
 use App\OpenApi\Model\Schema;
+use App\OpenApi\Model\Method;
+use App\OpenApi\Model\Response;
+use App\OpenApi\Model\ResponseCollection;
+use App\OpenApi\Model\Content;
+use App\OpenApi\Model\ContentType;
 use Symfony\Component\DependencyInjection\Attribute\AsDecorator;
 
 #[AsDecorator(decorates: 'api_platform.openapi.factory')]
@@ -46,25 +51,29 @@ class OpenApiFactory implements OpenApiFactoryInterface {
         $openApi = $this->addEndpoint(
             $openApi,
             '/api/ping',
-            [
-                'GET' => [
-                    'operationId' => 'api_ping',
-                    'summary' => 'Ping',
-                    'description' => 'Used to check if servers are alive',
-                    'responses' => [
-                        [
-                            'status' => 200,
-                            'description' => 'OK',
-                            'content' => [
-                                'application/json' => [
-                                    'schema' => (new Schema(ref: '#/components/schemas/Ping'))->toArray(),
-                                ]
+            new OperationCollection(
+                operations: [
+                    new Operation(
+                        method: Method::GET,
+                        operationId: 'api_ping',
+                        description: 'Used to check if servers are alive',
+                        summary: 'Ping',
+                        tags: ['Ping'],
+                        responses: new ResponseCollection(
+                            [
+                                new Response(
+                                    status: 200,
+                                    description: 'OK',
+                                    content: new Content(
+                                        type: ContentType::APPLICATION_JSON,
+                                        schema: new Schema(ref: '#/components/schemas/Ping'),
+                                    )
+                                )
                             ]
-                        ]
-                    ]
-                ],
-            ],
-            ['Ping'],
+                        )
+                    )
+                ]
+            ),
         );
 
         return $openApi;
@@ -89,30 +98,18 @@ class OpenApiFactory implements OpenApiFactoryInterface {
         return $openApi;
     }
 
-    private function addEndpoint(OpenApi $openApi, string $route, array $routeData, array $tags = []): OpenApi
+    private function addEndpoint(OpenApi $openApi, string $route, OperationCollection $operationCollection): OpenApi
     {
-        $pathItem = $this->getPathItem($routeData, $tags);
+        $pathItem = $this->getPathItem($operationCollection);
         $openApi->getPaths()->addPath($route, $pathItem);
 
         return $openApi;
     }
 
-    private function getPathItem(array $routeData, array $tags): PathItem
+    private function getPathItem(OperationCollection $operationCollection): PathItem
     {
         $pathItem = new PathItem();
-        $operations = [];
-
-        foreach ($routeData as $method => $value) {
-            $responses = $this->getResponses($value['responses'] ?? []);
-
-            $operations[$method] = new Operation(
-                operationId: $value['operationId'],
-                description: $value['description'] ?? '',
-                summary: $value['summary'] ?? '',
-                responses: $responses,
-                tags: $tags,
-            );
-        }
+        $operations = $operationCollection->toArray();
 
         if (array_key_exists('GET', $operations)) {
             $pathItem = $pathItem->withGet($operations['GET']);
@@ -131,18 +128,5 @@ class OpenApiFactory implements OpenApiFactoryInterface {
         }
 
         return $pathItem;
-    }
-
-    private function getResponses(array $data): array
-    {
-        $responses = [];
-        foreach ($data as $item) {
-            $responses[(string) $item['status']] = new Response(
-                description: $item['description'],
-                content: new \ArrayObject($item['content']),
-            );
-        }
-
-        return $responses;
     }
 } 

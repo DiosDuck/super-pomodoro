@@ -4,11 +4,11 @@ namespace App\OpenApi\Model;
 
 class Schema extends ToArray {
     public function __construct(
-        private ?string $type = null,
-        private ?string $description = null,
-        private ?string $example = null,
-        private ?array $properties = null,
-        private ?string $ref = null,
+        public ?string $type = null,
+        public ?string $description = null,
+        public ?string $example = null,
+        public ?array $properties = null,
+        public ?string $ref = null,
     ) {
     }
 

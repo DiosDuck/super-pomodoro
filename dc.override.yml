@@ -1,0 +1,6 @@
+services:
+  backend:
+    command: php-fpm -F
+
+  frontend:
+    command: npx ng build --watch --poll 200

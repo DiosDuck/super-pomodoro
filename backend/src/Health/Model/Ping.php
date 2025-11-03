@@ -6,8 +6,16 @@ namespace App\Health\Model;
 
 use OpenApi\Attributes as OA;
 
-#[OA\Schema(schema: 'Ping')]
+#[OA\Schema(
+    schema: 'Ping',
+    title: 'Ping Schema',
+    description: 'Ping Schema',
+)]
 class Ping {
-    #[OA\Property(type: 'string', example: 'OK')]
-    public string $message;
+    public function __construct(
+        #[OA\Property(type: 'string', example: 'OK')]
+        public string $message,
+        #[OA\Property(type: 'integer', enum: [0, 1, 2], example: 0)]
+        public Status $status = Status::OK,
+    ) { }
 }

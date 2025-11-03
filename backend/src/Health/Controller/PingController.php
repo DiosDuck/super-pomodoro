@@ -6,6 +6,8 @@ namespace App\Health\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Health\Model\Ping;
+use Nelmio\ApiDocBundle\Attribute\Model;
 use OpenApi\Attributes as OA;
 
 class PingController extends AbstractController
@@ -20,18 +22,11 @@ class PingController extends AbstractController
         response: 200,
         description: 'OK',
         content: new OA\JsonContent(
-            type: 'object',
-            properties: [
-                new OA\Property(
-                    property: 'message',
-                    type: 'string',
-                    example: 'OK'
-                )
-            ]
+            ref: new Model(type: Ping::class),
         )
     )]
     public function __invoke()
     {
-        return $this->json(['message' => 'OK']);
+        return $this->json(new Ping('OK'));
     }
 }

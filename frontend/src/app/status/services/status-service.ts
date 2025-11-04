@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { StatusResponse } from '../models/status';
 
 @Injectable({
   providedIn: 'root'
@@ -8,8 +9,8 @@ import { Observable } from 'rxjs';
 export class StatusService {
   constructor(private http: HttpClient) {}
 
-  getResponse(url: string): Observable<any>
+  getResponse(url: string): Observable<StatusResponse>
   {
-    return this.http.get(url);
+    return this.http.get<StatusResponse>(url);
   }
 }

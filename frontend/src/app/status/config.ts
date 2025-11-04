@@ -1,6 +1,6 @@
-import { Status } from "./model/status";
+import { StatusRequest } from "./model/status";
 
-export const STATUS_LIST : Status [] = [
+export const STATUS_LIST : StatusRequest [] = [
     {
         name: 'Server Check',
         url: '/api/ping',

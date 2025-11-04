@@ -1,4 +1,4 @@
-export interface Status {
+export interface StatusRequest {
     name: string,
     url: string,
 };

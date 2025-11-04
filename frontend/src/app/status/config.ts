@@ -1,4 +1,4 @@
-import { StatusRequest } from "./model/status";
+import { StatusRequest } from "./models/status";
 
 export const STATUS_LIST : StatusRequest [] = [
     {

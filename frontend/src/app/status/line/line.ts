@@ -1,5 +1,5 @@
-import { Component, effect, inject, input, signal } from '@angular/core';
-import { StatusRequest } from '../model/status';
+import { Component, effect, input, signal } from '@angular/core';
+import { StatusRequest } from '../models/status';
 import { StatusService } from '../services/status-service';
 
 @Component({

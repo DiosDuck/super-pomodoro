@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
-import { Status } from './status/status';
-import { App } from './app';
+import { Index as Status } from './status/index/index';
 import { NotFound } from './not-found/not-found';
 import { Home } from './home/home';
 

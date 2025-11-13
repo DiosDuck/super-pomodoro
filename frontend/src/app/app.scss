@@ -1,11 +1,40 @@
-nav {
-    height: 5rem;
+.navbar {
+    height: 7rem;
     background-color: var(--primary-bg);
     border-bottom: 1px solid var(--secondary-bg);
-    padding: 1rem;
 
     font-size: 3rem;
     color: var(--primary-color);
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    &--title {
+        font-size: 4rem;
+        margin-right: auto;
+        padding: 0 1rem;
+        cursor: pointer;
+    }
+
+    &--list {
+        display: flex;
+        flex-direction: row;
+        list-style: none;
+        height: 100%;
+
+        &__item {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 1rem;
+
+            &:hover {
+                background-color: var(--secondary-bg);
+                color: var(--secondary-color);
+            }
+        }
+    }
 }
 
 main {

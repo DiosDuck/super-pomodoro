@@ -1,10 +1,11 @@
 import { Component, effect, input, signal } from '@angular/core';
 import { StatusRequest } from '../models/status';
 import { StatusService } from '../services/status-service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-status-line',
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './line.html',
   styleUrl: './line.scss',
 })

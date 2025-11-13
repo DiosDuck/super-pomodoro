@@ -1,4 +1,4 @@
 <div class="status-line">
     <span class="status-line__title">{{ status().name }}</span>
-    <span class="status-line__result">{{ response() }}</span>
+    <span class="status-line__result" [class]="'status-line__' + response()">{{ response() | titlecase }}</span>
 </div>

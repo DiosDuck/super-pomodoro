@@ -1,0 +1,24 @@
+nav {
+    height: 5rem;
+    background-color: var(--primary-bg);
+    border-bottom: 1px solid var(--secondary-bg);
+    padding: 1rem;
+
+    font-size: 3rem;
+    color: var(--primary-color);
+}
+
+main {
+    height: calc(100% - 14rem - 1px);
+    background-color: var(--primary-bg);
+    color: var(--primary-color);
+}
+
+footer {
+    height: 5rem;
+    background-color: var(--secondary-bg);
+    padding: 1rem;
+
+    color: var(--secondary-color);
+    font-size: 3rem;
+}

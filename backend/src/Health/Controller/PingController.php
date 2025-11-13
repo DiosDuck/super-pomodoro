@@ -27,6 +27,7 @@ class PingController extends AbstractController
     )]
     public function __invoke()
     {
+        sleep(2);
         return $this->json(new Ping('OK'));
     }
 }

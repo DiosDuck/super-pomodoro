@@ -4,6 +4,6 @@ export interface StatusRequest {
 };
 
 export interface StatusResponse {
-    message: string,
-    status: 0|1|2
+    message?: string,
+    status: -1|0|1|2
 }

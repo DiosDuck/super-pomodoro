@@ -2,11 +2,15 @@ import { StatusRequest } from "./models/status";
 
 export const STATUS_LIST : StatusRequest [] = [
     {
-        name: 'Server Check',
-        url: '/api/ping',
+        name: 'Server Status',
+        url: '/api/health/ping',
     },
     {
-        name: 'Server Check but with error',
-        url: '/api/ping?fail=1',
+        name: 'Server Status with error',
+        url: '/api/health/ping?fail=1',
+    },
+    {
+        name: 'Database Status',
+        url: '/api/health/database',
     },
 ];

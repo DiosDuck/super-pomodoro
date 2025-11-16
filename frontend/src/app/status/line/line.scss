@@ -1,6 +1,9 @@
 $color-waiting: #999;
 $color-success: #4BB543;
+$color-warning: #ffa700;
 $color-error: #D90202;
+
+$color-message: #665;
 
 .status-line {
     display: flex;
@@ -21,6 +24,11 @@ $color-error: #D90202;
     &__result {
         padding-left: 2.5rem;
         position: relative;
+
+        &--message {
+            font-size: 1.5rem;
+            color: $color-message;
+        }
     }
 
     &__waiting {
@@ -39,6 +47,14 @@ $color-error: #D90202;
         }
     }
 
+    &__warning {
+        color: $color-warning;
+
+        &::before {
+            background-color: $color-warning;
+        }
+    }
+
     &__error {
         color: $color-error;
 
@@ -47,7 +63,7 @@ $color-error: #D90202;
         }
     }
 
-    &__waiting::before, &__success::before, &__error::before {
+    &__waiting::before, &__success::before, &__warning::before, &__error::before {
         content: "";
         position: absolute;
         left: 0.625rem;

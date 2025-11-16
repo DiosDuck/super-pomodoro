@@ -1,5 +1,5 @@
-import { Component, effect, input, signal } from '@angular/core';
-import { StatusRequest } from '../models/status';
+import { Component, effect, input, signal, computed } from '@angular/core';
+import { StatusRequest, StatusResponse } from '../models/status';
 import { StatusService } from '../services/status-service';
 import { CommonModule } from '@angular/common';
 
@@ -12,7 +12,25 @@ import { CommonModule } from '@angular/common';
 export class Line {
   status = input.required<StatusRequest>();
 
-  response = signal<'waiting'|'success'|'error'>('waiting');
+  response = signal<StatusResponse>({status: -1});
+  responseStatus = computed<'waiting'|'success'|'warning'|'error'>(
+    () => {
+      switch(this.response().status) {
+        case -1: {
+          return 'waiting';
+        }
+        case 0: {
+            return 'success';
+        }
+        case 1: {
+          return 'warning';
+        }
+        case 2: {
+          return 'error';
+        }
+      }
+    }
+  );
 
   constructor(private statusService: StatusService) {
     effect(() => {
@@ -22,8 +40,14 @@ export class Line {
       }
 
       this.statusService.getResponse(url).subscribe({
-        next: (res) => {this.response.set('success')},
-        error: (err) => {this.response.set('error')},
+        next: (res) => {this.response.set(res)},
+        error: (err) => {
+          if ('status' in err.error) {
+            this.response.set(err.error);
+          } else {
+            this.response.set({status: 2});
+          }
+        },
       });
     });
   }

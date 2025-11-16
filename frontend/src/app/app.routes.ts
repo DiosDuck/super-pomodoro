@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { Index as Status } from './status/index/index';
+import { Index as Pomodoro } from './pomodoro/index/index';
 import { NotFound } from './not-found/not-found';
 import { Home } from './home/home';
 
@@ -12,6 +13,10 @@ export const routes: Routes = [
         path: '',
         component: Home,
         pathMatch: 'full',
+    },
+    {
+        path: 'pomodoro',
+        component: Pomodoro,
     },
     {
         path: 'not-found',

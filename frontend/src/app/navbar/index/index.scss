@@ -1,0 +1,124 @@
+@mixin hamburger-line {
+    display: inline-block;
+    width: 2rem;
+    height: 0.3rem;
+
+    background-color: var(--black-color-1);
+    border-radius: 1rem;
+    
+    transition-duration: 0.2s;
+}
+
+.navbar {
+    position: relative;
+    
+    &-checkbox {
+        display: none;
+    }
+
+    &-hamburger {
+        position: absolute;
+        z-index: 1000;
+
+        top: 1.5rem;
+        right: 1.5rem;
+        height: 4rem;
+        width: 4rem;
+
+        border-radius: 100%;
+        background-color: var(--white-color-1);
+        border: 1px solid var(--black-color-1);
+        box-shadow: 1px 2px 2px var(--black-color-1);
+
+        cursor: pointer;
+
+        &__line {
+            position: absolute;
+            top: 1.85rem;
+            left: 1rem;
+
+            @include hamburger-line;
+
+            &::before, &::after {
+                content: "";
+                position: absolute;
+                @include hamburger-line;
+            }
+
+            &::before {
+                transform-origin: 0% 50%;
+                top: -0.75rem;
+            }
+
+            &::after {
+                transform-origin: 100% 50%;
+                top: 0.75rem;
+            }
+        }
+    }
+
+    &-list {
+        display: inline-block;
+        
+        position: absolute;
+        z-index: 900;
+        top: 7rem;
+        right: 1.5rem;
+
+        border-radius: 1rem;
+        border: 2px solid var(--black-color-1);
+        padding: 1rem;
+        background-color: var(--white-color-1);
+        box-shadow: 2px 3px 3px var(--black-color-1);
+        
+        transition-duration: 0.2s;
+        transform: translateX(200%);
+
+        &__title {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+        }
+
+        &__items {
+            display: flex;
+            flex-direction: column;
+            list-style: none;
+
+            &--item {
+                cursor: pointer;
+                font-size: 2rem;
+                padding: 1rem 0;
+
+                &:not(:last-child) {
+                    border-bottom: 1px solid var(--gray-color-1);
+                }
+
+                &:hover, &:focus {
+                    color: var(--gray-color-1);
+                }
+            }
+        }
+    }
+
+    &-checkbox:checked~&-hamburger {
+        .navbar-hamburger__line {
+            left: 0.45rem;
+            transform: rotate(90deg);
+
+            &::before {
+                top: 0;
+                transform: rotate(-60deg);
+            }
+
+            &::after {
+                top: 0;
+                transform: rotate(60deg);
+            }
+        }
+    }
+
+    &-checkbox:checked~&-list {
+        transform: translateX(0);
+    }
+}

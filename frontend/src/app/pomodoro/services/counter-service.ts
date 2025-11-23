@@ -5,9 +5,17 @@ import { Settings } from '../models/settings';
   providedIn: 'root'
 })
 export class CounterService {
+  static readonly sessionKey = 'pomodoro.settings';
+
+  public setSettings(settings: Settings): void
+  {
+    let data = JSON.stringify(settings);
+    localStorage.setItem(CounterService.sessionKey, data);
+  }
+
   public getSettings(): Settings
   {
-    let data = localStorage.getItem('pomodoro.settings');
+    let data = localStorage.getItem(CounterService.sessionKey);
     if (data === null) {
       return this.createNewSetting();
     }

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterLink } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 import { NAV_ITEMS } from '../config';
 
 @Component({
@@ -10,4 +10,7 @@ import { NAV_ITEMS } from '../config';
 })
 export class Index {
   navItems = NAV_ITEMS;
+
+  constructor(public router: Router) {
+  }
 }

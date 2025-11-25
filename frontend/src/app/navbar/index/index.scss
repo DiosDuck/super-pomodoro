@@ -93,10 +93,10 @@
                 &:not(:last-child) {
                     border-bottom: 1px solid var(--gray-color-1);
                 }
+            }
 
-                &:hover, &:focus {
+            &--selected, &--item:hover, &--item:focus {
                     color: var(--gray-color-1);
-                }
             }
         }
     }

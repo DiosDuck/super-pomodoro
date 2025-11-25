@@ -7,7 +7,7 @@
     <h3 class="navbar-list__title" routerLink="/">Super Pomodoro</h3>
     <ul class="navbar-list__items">
         @for (navItem of navItems; track $index) {
-            <li class="navbar-list__items--item" routerLink="{{navItem.url}}">{{navItem.name}}</li>
+            <li class="navbar-list__items--item" [class.navbar-list__items--selected]="navItem.url === router.url" routerLink="{{navItem.url}}">{{navItem.name}}</li>
         }
     </ul>
   </div>

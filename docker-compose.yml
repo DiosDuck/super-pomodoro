@@ -14,7 +14,6 @@ services:
     volumes:
       - ./backend:/var/www/backend:delegated
       - ./docker/backend/dev.ini:/usr/locale/etc/php/conf.d/dev.ini:ro
-    command: bash -c "composer install && php-fpm -F"
 
   frontend:
     build:
@@ -24,7 +23,6 @@ services:
     working_dir: /app
     volumes:
       - ./frontend:/app:delegated
-    command: sh -c "npm ci && npx ng build --watch --poll 200"
 
   nginx:
     image: nginx:1.27-alpine

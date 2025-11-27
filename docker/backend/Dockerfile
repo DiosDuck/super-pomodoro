@@ -14,4 +14,4 @@ RUN apk add --no-cache icu-dev libzig-dev openssl $PHPIZE_DEPS; \
 
 WORKDIR /var/www/backend
 
-CMD ["php-fpm", "-F"]
+CMD ["bash", "-c", "composer install && php-fpm -F"]

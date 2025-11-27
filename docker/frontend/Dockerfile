@@ -4,4 +4,4 @@ RUN npm install -g @angular/cli
 
 WORKDIR /app
 
-CMD ["npx", "ng", "build", "--watch", "--poll", "200"]
+CMD ["sh", "-c", "npm ci && npx ng build --watch --poll 200"]

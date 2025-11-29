@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Authentication\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,6 +19,14 @@ class ProfileController extends AbstractController {
         path: '/api/profile',
         summary: 'Profile user',
         tags: ['Profile'],
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'User\'s profile data',
+    )]
+    #[OA\Response(
+        response: 403,
+        description: 'User not logged in ',
     )]
     public function profile(#[CurrentUser] ?User $user): JsonResponse
     {

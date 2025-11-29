@@ -73,24 +73,9 @@ class AuthenticationController extends AbstractController {
         response: 200,
         description: 'User is logged out',
     )]
-    public function performLogout(): JsonResponse
+    public function performLogout(): void
     {
-        return $this->json(['message' => 'ok']);
-    }
-
-    #[Route(path: '/logout', name: 'logout', methods: ['GET'])]
-    #[OA\Get(
-        path: '/api/auth/logout',
-        summary: 'Success logout user',
-        tags: ['Authentication'],
-    )]
-    #[OA\Response(
-        response: 200,
-        description: 'User is logged out',
-    )]
-    public function logout(): JsonResponse
-    {
-        return $this->json(['message' => 'ok']);
+        
     }
 
     public function devRegister(UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): JsonResponse

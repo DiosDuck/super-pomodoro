@@ -20,7 +20,6 @@ security:
                 check_path: auth_login
             logout:
                 path: auth_perform-logout
-                target: auth_logout
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall

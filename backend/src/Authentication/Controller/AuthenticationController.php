@@ -6,7 +6,6 @@ namespace App\Authentication\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use OpenApi\Attributes as OA;
 use App\Authentication\Entity\User;
@@ -15,7 +14,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 #[Route(path: '/api/auth', name: 'auth_')]
-class LoginController extends AbstractController {
+class AuthenticationController extends AbstractController {
 
     #[Route(path: '/login', name: 'login', methods: ['POST'])]
     #[OA\Post(
@@ -62,6 +61,36 @@ class LoginController extends AbstractController {
             'message' => 'ok',
             'displayName' => $user->getDisplayName(),
         ]);
+    }
+
+    #[Route(path: '/perform-logout', name: 'perform-logout', methods: ['GET'])]
+    #[OA\Get(
+        path: '/api/auth/perform-logout',
+        summary: 'Logout user',
+        tags: ['Authentication'],
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'User is logged out',
+    )]
+    public function performLogout(): JsonResponse
+    {
+        return $this->json(['message' => 'ok']);
+    }
+
+    #[Route(path: '/logout', name: 'logout', methods: ['GET'])]
+    #[OA\Get(
+        path: '/api/auth/logout',
+        summary: 'Success logout user',
+        tags: ['Authentication'],
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'User is logged out',
+    )]
+    public function logout(): JsonResponse
+    {
+        return $this->json(['message' => 'ok']);
     }
 
     public function devRegister(UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): JsonResponse

@@ -9,3 +9,11 @@ controllers_auth:
         path: ../src/Authentication/Controller/
         namespace: App\Authentication\Controller
     type: attribute
+
+# login path
+api_auth_login:
+    path: /api/auth/login
+
+# logout path
+api_auth_logout:
+    path: /api/auth/logout

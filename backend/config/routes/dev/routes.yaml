@@ -1,4 +1,4 @@
 auth_dev_register:
   path: /api/dev/auth_dev_register
-  controller: App\Authentication\Controller\LoginController::devRegister
+  controller: App\Authentication\Controller\AuthenticationController::devRegister
   methods: GET

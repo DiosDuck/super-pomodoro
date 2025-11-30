@@ -19,6 +19,7 @@ class ProfileController extends AbstractController {
         path: '/api/profile',
         summary: 'Profile user',
         tags: ['Profile'],
+        security: [['Bearer' => []]],
     )]
     #[OA\Response(
         response: 200,

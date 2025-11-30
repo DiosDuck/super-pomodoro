@@ -13,7 +13,10 @@ services:
       XDEBUG_CONFIG: "client_host=host.docker.internal client_port=9003"
     volumes:
       - ./backend:/var/www/backend:delegated
+      - ./docker/backend/.env.local:/var/www/backend/.env.local:ro
       - ./docker/backend/dev.ini:/usr/locale/etc/php/conf.d/dev.ini:ro
+    tmpfs:
+      - /var/www/backend/var/cache
 
   frontend:
     build:
@@ -48,7 +51,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - "./locale/mysql:/var/lob/mysql"
+      - "./locale/mysql:/var/lib/mysql"
     depends_on:
       - backend
       

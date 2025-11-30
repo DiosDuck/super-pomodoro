@@ -10,16 +10,31 @@ security:
                 class: App\Authentication\Entity\User
                 property: username
     firewalls:
+        # Nelmio API
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        main:
-            lazy: true
-            provider: app_user_provider
+
+        # Endpoints
+        authentication_api:
+            pattern: ^/api/auth/login
+            stateless: true
             json_login:
-                check_path: auth_login
+                check_path: api_auth_login
+                username_path: username
+                password_path: password
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+
+        api:
+            pattern: ^/api
+            stateless: true
+            provider: app_user_provider
+            jwt: ~
             logout:
-                path: auth_perform-logout
+                # TODO: fix the route
+                path: api_auth_logout
+        
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall

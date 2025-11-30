@@ -1,16 +1,18 @@
-import { Component } from '@angular/core';
-import { Router, RouterLink } from "@angular/router";
-import { NAV_ITEMS } from '../config';
+import { Component, signal } from '@angular/core';
+import { navId } from '../config';
+import { Menu } from "../menu/menu";
+import { Auth } from '../auth/auth';
 
 @Component({
   selector: 'app-navbar',
-  imports: [RouterLink],
+  imports: [Menu, Auth],
   templateUrl: './index.html',
   styleUrl: './index.scss'
 })
 export class Index {
-  navItems = NAV_ITEMS;
+  selectedId = signal<navId>(null);
 
-  constructor(public router: Router) {
+  onSelect(id: navId) {
+    this.selectedId.set(id);
   }
 }

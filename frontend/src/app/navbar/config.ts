@@ -1,4 +1,4 @@
-import { NavItem } from "./models/nav-item";
+import { NavItem } from "./models/nav-elems";
 
 export const NAV_ITEMS : NavItem [] = [
     {
@@ -14,3 +14,8 @@ export const NAV_ITEMS : NavItem [] = [
         url: '/status',
     },
 ];
+
+export const NAV_MENU_ID = 'nav-menu';
+export const NAV_AUTH_ID = 'nav-auth';
+
+export type navId = typeof NAV_MENU_ID | typeof NAV_AUTH_ID | null;

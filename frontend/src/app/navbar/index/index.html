@@ -1,14 +1,10 @@
 <nav class="navbar">
-  <input id="navbar-button" type="checkbox" class="navbar-checkbox">
-  <label for="navbar-button" class="navbar-hamburger">
-    <div class="navbar-hamburger__line"></div>
-  </label>
-  <div class="navbar-list">
-    <h3 class="navbar-list__title" routerLink="/">Super Pomodoro</h3>
-    <ul class="navbar-list__items">
-        @for (navItem of navItems; track $index) {
-            <li class="navbar-list__items--item" [class.navbar-list__items--selected]="navItem.url === router.url" routerLink="{{navItem.url}}">{{navItem.name}}</li>
-        }
-    </ul>
-  </div>
+  <app-nav-menu 
+    [currentId]="selectedId()" 
+    (onSelect)="onSelect($event)">
+  </app-nav-menu>
+  <app-nav-auth
+    [currentId]="selectedId()" 
+    (onSelect)="onSelect($event)">
+  </app-nav-auth>
 </nav>

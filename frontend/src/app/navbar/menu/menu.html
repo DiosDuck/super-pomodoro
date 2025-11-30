@@ -1,0 +1,14 @@
+<div class="nav-bubble">
+    <input [id]="id" type="checkbox" class="nav-bubble-checkbox" [checked]="isSelected()" (change)="toggle()">
+    <label [for]="id" class="nav-bubble-hamburger">
+        <div class="nav-bubble-hamburger__line"></div>
+    </label>
+    <div class="nav-bubble-list">
+        <h3 class="nav-bubble-list__title">Menu</h3>
+        <ul class="nav-bubble-list__items">
+            @for (navItem of navItems; track $index) {
+                <li class="nav-bubble-list__items--item" [class.nav-bubble-list__items--selected]="navItem.url === router.url" routerLink="{{navItem.url}}">{{navItem.name}}</li>
+            }
+        </ul>
+    </div>
+</div>

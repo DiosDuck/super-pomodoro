@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use OpenApi\Attributes as OA;
 use App\Authentication\Entity\User;
+use App\Authentication\DTO\UserDTO;
+use Nelmio\ApiDocBundle\Attribute\Model;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 #[Route(path: '/api', name: 'profile_')]
@@ -24,6 +26,9 @@ class ProfileController extends AbstractController {
     #[OA\Response(
         response: 200,
         description: 'User\'s profile data',
+        content: new OA\JsonContent(
+            ref: new Model(type: UserDTO::class),
+        )
     )]
     #[OA\Response(
         response: 403,
@@ -38,8 +43,6 @@ class ProfileController extends AbstractController {
             );
         }
 
-        return $this->json([
-            'name' => $user->getDisplayName()
-        ]);
+        return $this->json(UserDTO::fromUser($user));
     }
 }

@@ -20,7 +20,7 @@ php bin/console doctrine:migration:migrate
 ```
 - for adding the JWT tokens
 ```
-php bin/console lexik:jwt:generate-keypairs
+php bin/console lexik:jwt:generate-keypair
 ```
 
 Wait till 'frontend' container is finished executing, the access the page through `localhost:8081`

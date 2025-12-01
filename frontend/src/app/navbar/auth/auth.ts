@@ -9,19 +9,8 @@ import { NAV_ITEMS, NAV_AUTH_ID, navId } from '../config';
   styleUrl: './auth.scss',
 })
 export class Auth {
-  id : navId = NAV_AUTH_ID;
   navItems = NAV_ITEMS;
 
-  currentId = input.required<navId>();
-  isSelected = computed<boolean>(() => this.currentId() === this.id);
-
-  onSelect = output<navId>();
-
   constructor(public router: Router) {
-  }
-
-  toggle() {
-    let val : navId = this.isSelected() ? null : this.id;
-    this.onSelect.emit(val);
   }
 }

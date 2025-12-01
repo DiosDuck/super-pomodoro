@@ -1,0 +1,11 @@
+<div class="nav-bubble">
+    <input [id]="id()" type="checkbox" class="nav-bubble-checkbox" [checked]="isSelected()" (change)="toggle()">
+    <label [for]="id()" class="nav-bubble-hamburger">
+        <svg class="nav-bubble-hamburger__icon">
+            <use [attr.xlink:href]="'assets/icons/sprite.svg#icon-' + currentIcon()"></use>
+        </svg>
+    </label>
+    <div class="nav-bubble-list">
+        <ng-content />
+    </div>
+</div>

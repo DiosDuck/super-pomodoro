@@ -1,0 +1,66 @@
+.nav-bubble {
+    position: relative;
+
+    &-checkbox {
+        display: none;
+    }
+
+    &-hamburger {
+        position: absolute;
+        z-index: 1000;
+
+        top: 0rem;
+        right: 0rem;
+        height: 4rem;
+        width: 4rem;
+
+        border-radius: 100%;
+        background-color: var(--white-color-1);
+        border: 2px solid var(--black-color-1);
+
+        cursor: pointer;
+
+        &__icon {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+
+            width: 3rem;
+            height: 3rem;
+            fill: var(--black-color-1);
+            transition-duration: 0.4s;
+
+            &:hover, &:focus {
+                fill: var(--gray-color-1);
+            }
+        }
+    }
+
+    &-list {
+        display: inline-block;
+        
+        position: absolute;
+        z-index: 1100;
+        top: 5rem;
+        right: 0rem;
+
+        border-radius: 1rem;
+        border: 2px solid var(--black-color-1);
+        padding: 3rem;
+        background-color: var(--white-color-1);
+        
+        transition-duration: 0.2s;
+        transform: translateX(200%);
+    }
+
+    &-checkbox:checked~&-hamburger {
+        .nav-bubble-hamburger__icon {
+            transform: rotate(360deg);
+        }
+    }
+
+    &-checkbox:checked~&-list {
+        z-index: 1101;
+        transform: translateX(0);
+    }
+}

@@ -1,10 +1,18 @@
 <nav class="navbar">
-  <app-nav-menu 
-    [currentId]="selectedId()" 
-    (onSelect)="onSelect($event)">
-  </app-nav-menu>
-  <app-nav-auth
-    [currentId]="selectedId()" 
-    (onSelect)="onSelect($event)">
-  </app-nav-auth>
+  <app-nav-bubble
+    [id]="'nav-menu'"
+    [icon]="'menu'"
+    [currentId]="selectedId()"
+    (onSelect)="onSelect($event)"
+  >
+    <app-nav-menu />
+  </app-nav-bubble>
+  <app-nav-bubble
+    [id]="'nav-auth'"
+    [icon]="'person'"
+    [currentId]="selectedId()"
+    (onSelect)="onSelect($event)"
+  >
+    <app-nav-auth />
+  </app-nav-bubble>
 </nav>

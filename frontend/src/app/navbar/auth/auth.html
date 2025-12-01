@@ -1,14 +1,6 @@
-<div class="nav-bubble">
-    <input [id]="id" type="checkbox" class="nav-bubble-checkbox" [checked]="isSelected()" (change)="toggle()">
-    <label [for]="id" class="nav-bubble-hamburger">
-        <div class="nav-bubble-hamburger__line"></div>
-    </label>
-    <div class="nav-bubble-list">
-        <h3 class="nav-bubble-list__title">Authentication</h3>
-        <ul class="nav-bubble-list__items">
-            @for (navItem of navItems; track $index) {
-                <li class="nav-bubble-list__items--item">{{navItem.name}}</li>
-            }
-        </ul>
-    </div>
-</div>
+<h3 class="auth-menu__title">Authentication</h3>
+<ul class="auth-menu__list">
+    @for (navItem of navItems; track $index) {
+        <li class="auth-menu__list--item">{{navItem.name}}</li>
+    }
+</ul>

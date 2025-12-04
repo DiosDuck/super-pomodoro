@@ -15,3 +15,4 @@ export interface TokenResponse {
 }
 
 export type role = 'ROLE_USER' | 'ROLE_ADMIN';
+export type nullableUser = User | null;

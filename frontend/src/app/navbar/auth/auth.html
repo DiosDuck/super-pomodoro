@@ -1,6 +1,6 @@
-<h3 class="auth-menu__title">{{user() ? `Welcome, ${user()!.displayName}!` : 'Authentication'}}</h3>
+<h3 class="auth-menu__title">{{currentUser() ? `Welcome, ${currentUser()!.displayName}!` : 'Authentication'}}</h3>
 <ul class="auth-menu__list">
-    @if (user() === null) {
+    @if (currentUser() === null) {
         <li class="auth-menu__list--item" (click)="onLogin()">Login</li>   
         <li class="auth-menu__list--item">Register</li>   
     } 

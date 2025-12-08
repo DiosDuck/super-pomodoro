@@ -1,0 +1,8 @@
+<div class="dialog" [class.dialog--active]="isOpen()" (click)="onClose()">
+    <div class="dialog__content">
+        <svg class="dialog__close" (click)="onClose()">
+            <use xlink:href="assets/icons/sprite.svg#icon-close"></use>
+        </svg>
+        <ng-content/>
+    </div>
+</div>

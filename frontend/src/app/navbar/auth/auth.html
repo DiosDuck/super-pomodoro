@@ -2,7 +2,7 @@
 <ul class="auth-menu__list">
     @if (currentUser() === null) {
         <li class="auth-menu__list--item" (click)="onLogin()">Login</li>   
-        <li class="auth-menu__list--item">Register</li>   
+        <li class="auth-menu__list--item" (click)="onRegister()">Register</li>   
     } 
     @else {
         <li class="auth-menu__list--item">Profile</li>   

@@ -7,8 +7,8 @@ import { LoginData, TokenResponse, User, nullableUser } from '../models/user';
   providedIn: 'root'
 })
 export class UserService {
-    private user = signal<nullableUser>(null);
-    public currentUser = computed<nullableUser>(() => this.user());
+    private _user = signal<nullableUser>(null);
+    public currentUser = computed<nullableUser>(() => this._user());
 
     readonly sessionKey = 'TOKEN';
 
@@ -35,7 +35,7 @@ export class UserService {
 
     private setUser(user : nullableUser): void
     {
-        this.user.set(user);
+        this._user.set(user);
     }
 
     async getUser(): Promise<void> {

@@ -1,3 +1,7 @@
+@use "sass:color";
+
+$blue-color-1: #4ba9c8;
+
 .sign-in {
     height: 100vh;
     display: flex;
@@ -9,7 +13,7 @@
     &-title {
         text-align: center;
         font-size: 10rem;
-        color: var(--title-color);
+        color: var(--black-color-2);
     }
 
     &-form {
@@ -29,7 +33,7 @@
             &--label {
                 display: block;
                 font-size: 2.5rem;
-                color: var(--label-color);
+                color: var(--gray-color-3);
             }
 
             &--input {
@@ -41,7 +45,7 @@
                 padding: 0.5rem;
 
                 &::placeholder {
-                    color: var(--placeholder-color);
+                    color: var(--gray-color-2);
                 }
             }
         }
@@ -66,14 +70,16 @@
             }
 
             &--primary {
-                background-color: #4ba9c8;
+                background-color: $blue-color-1;
 
-                &:hover, &:focus, &:disabled {
-                    background-color: #3f91ac;
+                &:not(:disabled) {
+                    &:hover, &:focus {
+                        background-color: color.scale($blue-color-1, $lightness: -20%);
+                    }
                 }
 
                 &:disabled {
-                    color: var(--gray-color-1);
+                    background-color: color.scale($blue-color-1, $lightness: 20%);
                 }
             }
 
@@ -81,7 +87,7 @@
                 background-color: var(--gray-color-1);
 
                 &:hover, &:focus {
-                    background-color: #888;
+                    background-color: var(--gray-color-2);
                 }
             }
         }

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Index as Navbar } from "./navbar/index";
+import { Index as Navbar } from "./shared/components/navbar/index/index";
 import { RouterOutlet } from '@angular/router';
 
 @Component({

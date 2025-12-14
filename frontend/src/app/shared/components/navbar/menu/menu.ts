@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { Router, RouterLink } from "@angular/router";
 import { NAV_MENU_ITEMS } from '../config';
-import { UserService } from '../../shared/services/user-service';
+import { UserService } from '../../../services/user-service';
 import { LoggedInPipe } from '../pipe/user';
 
 @Component({

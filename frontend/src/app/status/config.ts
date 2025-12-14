@@ -6,10 +6,6 @@ export const STATUS_LIST : StatusRequest [] = [
         url: '/api/health/ping',
     },
     {
-        name: 'Server Status with error',
-        url: '/api/health/ping?fail=1',
-    },
-    {
         name: 'Database Status',
         url: '/api/health/database',
     },

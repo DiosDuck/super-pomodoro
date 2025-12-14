@@ -1,26 +1,28 @@
 import { Routes } from '@angular/router';
-import { Index as Status } from './status/index/index';
-import { Index as Pomodoro } from './pomodoro/index/index';
-import { NotFound } from './not-found/not-found';
-import { Home } from './home/home';
+import { adminGuard } from './shared/guard/user-state';
 
 export const routes: Routes = [
     {
         path: 'status',
-        component: Status,
+        canMatch: [adminGuard],
+        loadComponent: () => import('./status/index/index').then(m => m.Index),
     },
     {
         path: '',
-        component: Home,
         pathMatch: 'full',
+        loadComponent: () => import('./home/home').then(m => m.Home),
     },
     {
         path: 'pomodoro',
-        component: Pomodoro,
+        loadComponent: () => import('./pomodoro/index/index').then(m => m.Index),
+    },
+    {
+        path: 'auth',
+        loadChildren: () => import('./auth/routes').then(m => m.AUTH_ROUTES),
     },
     {
         path: 'not-found',
-        component: NotFound,
+        loadComponent: () => import('./not-found/not-found').then(m => m.NotFound),
     },
     {
         path: '**',

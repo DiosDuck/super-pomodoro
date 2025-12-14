@@ -1,8 +1,10 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { navId } from '../config';
 import { Menu } from "../menu/menu";
 import { Auth } from '../auth/auth';
 import { Bubble } from "../bubble/bubble";
+import { ActivatedRoute, Router } from '@angular/router';
+import { LastRouteService } from '../../shared/services/last-route-service';
 
 @Component({
   selector: 'app-navbar',
@@ -11,9 +13,15 @@ import { Bubble } from "../bubble/bubble";
   styleUrl: './index.scss'
 })
 export class Index {
+  lastRouteService = inject(LastRouteService);
+  router = inject(Router);
   selectedId = signal<navId>(null);
 
   onSelect(id: navId) {
     this.selectedId.set(id);
+
+    if (id === "nav-auth") {
+      this.lastRouteService.setLastRoute(this.router.url);
+    }
   }
 }

@@ -1,11 +1,6 @@
-<h3 class="auth-menu__title">{{currentUser() ? `Welcome, ${currentUser()!.displayName}!` : 'Authentication'}}</h3>
+<h3 class="auth-menu__title">{{user() ? `Welcome, ${user()!.displayName}!` : 'Authentication'}}</h3>
 <ul class="auth-menu__list">
-    @if (currentUser() === null) {
-        <li class="auth-menu__list--item" (click)="onLogin()">Login</li>   
-        <li class="auth-menu__list--item" (click)="onRegister()">Register</li>   
-    } 
-    @else {
-        <li class="auth-menu__list--item">Profile</li>   
-        <li class="auth-menu__list--item" (click)="onLogout()">Logout</li>   
+    @for (navItem of (navItems | loggedIn: user(): true ); track $index) {
+        <li class="auth-menu__list--item" [class.auth-menu__list--selected]="navItem.url === router.url" routerLink="{{navItem.url}}">{{navItem.name}}</li>
     }
 </ul>

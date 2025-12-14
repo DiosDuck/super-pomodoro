@@ -1,36 +1,34 @@
 import { Component, inject } from '@angular/core';
-import { Router } from "@angular/router";
-import { NAV_ITEMS } from '../config';
+import { Router, RouterLink } from "@angular/router";
+import { NAV_AUTH_ITEMS } from '../config';
 import { UserService } from '../../shared/services/user-service';
-import { DialogService } from '../../shared/services/dialog-service';
+import { LoggedInPipe } from '../pipe/user';
 
 @Component({
   selector: 'app-nav-auth',
   templateUrl: './auth.html',
+  imports: [RouterLink, LoggedInPipe],
   styleUrl: './auth.scss',
 })
 export class Auth {
   userService = inject(UserService);
-  dialogService = inject(DialogService);
+  router = inject(Router);
 
-  currentUser = this.userService.currentUser;
-  navItems = NAV_ITEMS;
-
-  constructor(public router: Router) {
-  }
-
-  onLogin(): void
-  {
-    this.userService.login({username: 'username', password: 'password'});
-  }
-
-  onRegister(): void
-  {
-    this.dialogService.open();
-  }
+  user = this.userService.currentUser;
+  navItems = NAV_AUTH_ITEMS;
 
   onLogout(): void
   {
     this.userService.logout();
+  }
+
+  saveCurrentUrl(): void
+  {
+    const url = this.router.url;
+    if (url.includes('auth')) {
+      return;
+    }
+
+    localStorage.setItem('lastUrl', url);
   }
 }

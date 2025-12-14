@@ -13,7 +13,7 @@ export class UserService {
     readonly sessionKey = 'TOKEN';
 
     constructor(private http: HttpClient) {
-        this.getUser();
+        this.loadUser();
     }
 
     async login(loginData : LoginData): Promise<void> {
@@ -21,10 +21,11 @@ export class UserService {
             const res = await firstValueFrom(this.http.post<TokenResponse>('/api/auth/login', loginData));
             this.setToken(res.token);
         } catch (err) {
-            // do nothing for now
+            throw err;
         }
 
-        this.getUser();
+        this.setUser(null);
+        this.loadUser();
     }
 
     logout(): void
@@ -38,7 +39,11 @@ export class UserService {
         this._user.set(user);
     }
 
-    async getUser(): Promise<void> {
+    async loadUser(): Promise<void> {
+        if (this._user()) {
+            return;
+        }
+
         const token = this.getToken();
         if (!token) {
             this.setUser(null);

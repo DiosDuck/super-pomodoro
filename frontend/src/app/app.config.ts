@@ -2,13 +2,14 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessC
 import { provideRouter, withRouterConfig } from '@angular/router';
 
 import { routes } from './app.routes';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { userInterceptor } from './shared/interceptors/login-interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideRouter(routes, withRouterConfig({onSameUrlNavigation: 'reload'})),
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([userInterceptor])),
   ]
 };

@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, signal, computed } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { LoginData, TokenResponse, User, nullableUser } from '../models/user';
+import { LocalStorageService } from './local-storage-service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,16 +11,14 @@ export class UserService {
     private _user = signal<nullableUser>(null);
     public currentUser = computed<nullableUser>(() => this._user());
 
-    readonly sessionKey = 'TOKEN';
-
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, private _localStorageService: LocalStorageService) {
         this.loadUser();
     }
 
     async login(loginData : LoginData): Promise<void> {
         try {
             const res = await firstValueFrom(this.http.post<TokenResponse>('/api/auth/login', loginData));
-            this.setToken(res.token);
+            this._localStorageService.setUserToken(res.token);
         } catch (err) {
             throw err;
         }
@@ -30,13 +29,8 @@ export class UserService {
 
     logout(): void
     {
-        this.removeToken();
+        this._localStorageService.removeUserToken();
         this.setUser(null);
-    }
-
-    private setUser(user : nullableUser): void
-    {
-        this._user.set(user);
     }
 
     async loadUser(): Promise<void> {
@@ -44,7 +38,7 @@ export class UserService {
             return;
         }
 
-        const token = this.getToken();
+        const token = this._localStorageService.getUserToken();
         if (!token) {
             this.setUser(null);
             return;
@@ -63,18 +57,8 @@ export class UserService {
         this.setUser(user);
     }
 
-    private getToken(): string | null
+    private setUser(user : nullableUser): void
     {
-        return localStorage.getItem(this.sessionKey);
-    }
-
-    private setToken(token : string): void
-    {
-        localStorage.setItem(this.sessionKey, token);
-    }
-
-    private removeToken(): void
-    {
-        localStorage.removeItem(this.sessionKey);
+        this._user.set(user);
     }
 }

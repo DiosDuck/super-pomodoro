@@ -1,7 +1,7 @@
 import { inject } from "@angular/core";
 import { CanActivateChildFn, CanActivateFn, Router } from "@angular/router";
 import { UserService } from "../services/user-service";
-import { LastRouteService } from "../services/last-route-service";
+import { LocalStorageService } from "../services/local-storage-service";
 
 export const unsignedGuard: CanActivateChildFn = async () => {
     const userService = inject(UserService);
@@ -25,9 +25,9 @@ export const adminGuard: CanActivateFn = async () => {
 export const logoutGuard: CanActivateFn = () => {
     const userService = inject(UserService);
     const router = inject(Router);
-    const lastRouteService = inject(LastRouteService);
+    const localStorageService = inject(LocalStorageService);
 
     userService.logout();
 
-    return router.navigateByUrl(lastRouteService.getLastRoute());
+    return router.navigateByUrl(localStorageService.getLastRoute());
 }

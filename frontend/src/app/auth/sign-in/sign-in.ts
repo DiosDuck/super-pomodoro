@@ -1,8 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserService } from '../../shared/services/user-service';
-import { LastRouteService } from '../../shared/services/last-route-service';
 import { Router } from '@angular/router';
+import { LocalStorageService } from '../../shared/services/local-storage-service';
 
 @Component({
   selector: 'app-sign-in',
@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 })
 export class SignIn {
   userService = inject(UserService);
-  lastRouteService = inject(LastRouteService);
+  localStorageService = inject(LocalStorageService);
   router = inject(Router);
 
   loginForm = new FormGroup({
@@ -31,7 +31,7 @@ export class SignIn {
         password: this.loginForm.value.password ?? '',
       }
       await this.userService.login(loginData);
-      this.router.navigateByUrl(this.lastRouteService.getLastRoute());
+      this.router.navigateByUrl(this.localStorageService.getLastRoute());
     } catch (err) {
       this.errorMsg.set('Username or password invalid!');
       this.isWaiting = false;

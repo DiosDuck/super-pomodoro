@@ -22,9 +22,9 @@ export class LocalStorageService {
         this.remove(this._loginSessionToken);
     }
 
-    getLastRoute(): string | null
+    getLastRoute(): string
     {
-        return this.get(this._lastRouteSession);
+        return this.get(this._lastRouteSession) ?? '/';
     }
 
     setLastRoute(url: string): void

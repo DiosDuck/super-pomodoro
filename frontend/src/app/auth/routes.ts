@@ -8,6 +8,11 @@ export const AUTH_ROUTES: Routes = [
         loadComponent: () => import('./sign-in/sign-in').then(m => m.SignIn),
     },
     {
+        path: 'register',
+        canMatch: [unsignedGuard],
+        loadComponent: () => import('./register/register').then(m => m.Register),
+    },
+    {
         path: 'sign-out',
         canActivate: [logoutGuard],
     },

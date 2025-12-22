@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, signal, computed } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { LoginData, TokenResponse, User, nullableUser } from '../models/user';
+import { User, nullableUser } from '../models/user';
 import { LocalStorageService } from './local-storage-service';
 
 @Injectable({
@@ -11,19 +11,7 @@ export class UserService {
     private _user = signal<nullableUser>(null);
     public currentUser = computed<nullableUser>(() => this._user());
 
-    constructor(private http: HttpClient, private _localStorageService: LocalStorageService) {
-        this.loadUser();
-    }
-
-    async login(loginData : LoginData): Promise<void> {
-        try {
-            const res = await firstValueFrom(this.http.post<TokenResponse>('/api/auth/login', loginData));
-            this._localStorageService.setUserToken(res.token);
-        } catch (err) {
-            throw err;
-        }
-
-        this.setUser(null);
+    constructor(private _http: HttpClient, private _localStorageService: LocalStorageService) {
         this.loadUser();
     }
 
@@ -49,9 +37,10 @@ export class UserService {
             const headers = new HttpHeaders({
                 Authorization: `Bearer ${token}`,
             });
-            user = await firstValueFrom(this.http.get<User>('/api/profile', {headers: headers}));
+            user = await firstValueFrom(this._http.get<User>('/api/profile', {headers: headers}));
         } catch (err) {
             user = null;
+            this._localStorageService.removeUserToken();
         }
 
         this.setUser(user);

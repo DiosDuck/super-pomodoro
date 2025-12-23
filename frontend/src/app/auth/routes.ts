@@ -1,5 +1,5 @@
 import { Routes } from "@angular/router";
-import { logoutGuard, unsignedGuard } from "../shared/guard/user-state";
+import { unsignedGuard } from "../shared/guard/user-state";
 
 export const AUTH_ROUTES: Routes = [
     {
@@ -11,10 +11,6 @@ export const AUTH_ROUTES: Routes = [
         path: 'register',
         canMatch: [unsignedGuard],
         loadComponent: () => import('./register/register').then(m => m.Register),
-    },
-    {
-        path: 'sign-out',
-        canActivate: [logoutGuard],
     },
     {
         path: '',

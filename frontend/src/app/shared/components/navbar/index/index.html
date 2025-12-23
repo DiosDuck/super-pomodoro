@@ -5,7 +5,9 @@
     [currentId]="selectedId()"
     (onSelect)="onSelect($event)"
   >
-    <app-nav-menu />
+    <app-nav-menu
+      (onSelect)="onSelect($event)"
+    />
   </app-nav-bubble>
   <app-nav-bubble
     [id]="'nav-auth'"
@@ -13,6 +15,8 @@
     [currentId]="selectedId()"
     (onSelect)="onSelect($event)"
   >
-    <app-nav-auth />
+    <app-nav-auth 
+      (onSelect)="onSelect($event)" 
+    />
   </app-nav-bubble>
 </nav>

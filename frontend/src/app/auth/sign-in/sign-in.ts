@@ -1,9 +1,8 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { LocalStorageService } from '../../shared/services/local-storage';
 import { AuthService } from '../auth.service';
 import { ToastService } from '../../shared/services/toast';
+import { LastRouteService } from '../../shared/services/last-route';
 
 @Component({
   selector: 'app-sign-in',
@@ -13,9 +12,8 @@ import { ToastService } from '../../shared/services/toast';
 })
 export class SignIn {
   authService = inject(AuthService);
-  localStorageService = inject(LocalStorageService);
   toastService = inject(ToastService);
-  router = inject(Router);
+  lastRouteService = inject(LastRouteService);
 
   loginForm = new FormGroup({
     username: new FormControl('', Validators.required),
@@ -32,14 +30,14 @@ export class SignIn {
       }
       await this.authService.login(loginData);
       this.toastService.addToast("Successful sign in!", "success");
-      this.router.navigateByUrl(this.localStorageService.getLastRoute());
+      await this.lastRouteService.redirectToLastRoute();
     } catch (err) {
       this.toastService.addToast("Username or password invalid!", "error");
       this.isWaiting = false;
     }
   }
 
-  onBack() {
-    this.router.navigateByUrl(this.localStorageService.getLastRoute());
+  async onBack() {
+    await this.lastRouteService.redirectToLastRoute();
   }
 }

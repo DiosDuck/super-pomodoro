@@ -1,10 +1,10 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { LocalStorageService } from '../../shared/services/local-storage';
 import { passwordMatchValidator } from '../register.validator';
 import { AuthService } from '../auth.service';
 import { ToastService } from '../../shared/services/toast';
+import { LastRouteService } from '../../shared/services/last-route';
 
 @Component({
   selector: 'app-register',
@@ -14,8 +14,8 @@ import { ToastService } from '../../shared/services/toast';
 })
 export class Register {
   authService = inject(AuthService);
-  localStorageService = inject(LocalStorageService);
   toastService = inject(ToastService);
+  lastRouteService = inject(LastRouteService);
   router = inject(Router);
 
   registerForm = new FormGroup(
@@ -51,8 +51,8 @@ export class Register {
     }
   }
 
-  onBack() {
-    this.router.navigateByUrl(this.localStorageService.getLastRoute());
+  async onBack() {
+    await this.lastRouteService.redirectToLastRoute();
   }
 
   isInvalid(key: string): boolean 

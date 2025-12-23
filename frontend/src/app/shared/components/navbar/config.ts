@@ -21,33 +21,6 @@ export const NAV_MENU_ITEMS : NavItem [] = [
     },
 ];
 
-export const NAV_AUTH_ITEMS : NavItem [] = [
-    {
-        name: 'Login',
-        url: '/auth/sign-in',
-        loggedIn: false,
-        adminRequired: false,
-    },
-    {
-        name: 'Register',
-        url: '/auth/register',
-        loggedIn: false,
-        adminRequired: false,
-    },
-    {
-        name: 'Profile',
-        url: '/profile',
-        loggedIn: true,
-        adminRequired: false,
-    },
-    {
-        name: 'Logout',
-        url: '/auth/sign-out',
-        loggedIn: true,
-        adminRequired: false,
-    },
-];
-
 export const NAV_MENU_ID = 'nav-menu';
 export const NAV_AUTH_ID = 'nav-auth';
 

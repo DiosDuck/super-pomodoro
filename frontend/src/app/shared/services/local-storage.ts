@@ -5,7 +5,6 @@ import { Injectable } from "@angular/core";
 })
 export class LocalStorageService {
     private readonly _loginSessionToken = 'TOKEN';
-    private readonly _lastRouteSession = 'lastRoute';
 
     getUserToken(): string | null
     {
@@ -20,25 +19,6 @@ export class LocalStorageService {
     removeUserToken(): void
     {
         this.remove(this._loginSessionToken);
-    }
-
-    getLastRoute(): string
-    {
-        return this.get(this._lastRouteSession) ?? '/';
-    }
-
-    setLastRoute(url: string): void
-    {
-        if (url.includes('auth')) {
-            return;
-        }
-
-        this.set(this._lastRouteSession, url);
-    }
-
-    removeLastRoute(): void
-    {
-        this.remove(this._lastRouteSession);
     }
 
     get(key: string): string | null

@@ -51,13 +51,17 @@
         top: 5rem;
         right: 0rem;
 
+        width: 30rem;
+        // 1.5 rem for margins, 6 rem padding, 4px border
+        max-width: calc(100vw - 9rem - 4px);
+
         border-radius: 1rem;
         border: 2px solid var(--black-color-1);
         padding: 3rem;
         background-color: var(--white-color-1);
         
         transition-duration: 0.2s;
-        transform: translateX(200%);
+        transform: translateX(calc(100% + 1.5rem));
     }
 
     &-checkbox:checked~&-hamburger {

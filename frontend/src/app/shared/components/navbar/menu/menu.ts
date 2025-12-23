@@ -1,6 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, output } from '@angular/core';
 import { Router, RouterLink } from "@angular/router";
-import { NAV_MENU_ITEMS } from '../config';
+import { NAV_MENU_ITEMS, navId } from '../config';
 import { UserService } from '../../../services/user';
 import { LoggedInPipe } from '../pipe/user';
 
@@ -17,4 +17,10 @@ export class Menu {
   user = this.userService.currentUser;
 
   router = inject(Router);
+  
+  onSelect = output<navId>();
+
+  toggle() {
+    this.onSelect.emit(null);
+  }
 }

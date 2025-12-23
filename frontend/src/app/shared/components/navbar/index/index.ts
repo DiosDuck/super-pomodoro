@@ -3,8 +3,7 @@ import { navId } from '../config';
 import { Menu } from "../menu/menu";
 import { Auth } from '../auth/auth';
 import { Bubble } from "../bubble/bubble";
-import { Router } from '@angular/router';
-import { LocalStorageService } from '../../../services/local-storage';
+import { LastRouteService } from '../../../services/last-route';
 
 @Component({
   selector: 'app-navbar',
@@ -13,15 +12,14 @@ import { LocalStorageService } from '../../../services/local-storage';
   styleUrl: './index.scss'
 })
 export class Index {
-  localStorageService = inject(LocalStorageService);
-  router = inject(Router);
+  lastRouteService = inject(LastRouteService);
   selectedId = signal<navId>(null);
 
   onSelect(id: navId) {
     this.selectedId.set(id);
 
     if (id === "nav-auth") {
-      this.localStorageService.setLastRoute(this.router.url);
+      this.lastRouteService.updateLastRoute();
     }
   }
 }

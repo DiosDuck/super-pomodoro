@@ -4,7 +4,7 @@ import { Menu } from "../menu/menu";
 import { Auth } from '../auth/auth';
 import { Bubble } from "../bubble/bubble";
 import { Router } from '@angular/router';
-import { LocalStorageService } from '../../../services/local-storage-service';
+import { LocalStorageService } from '../../../services/local-storage';
 
 @Component({
   selector: 'app-navbar',

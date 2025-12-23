@@ -1,9 +1,6 @@
 <div class="sign-in">
     <h1 class="sign-in-title">Sign in</h1>
     <form class="sign-in-form" [formGroup]="loginForm" (submit)="onSubmit()">
-        <div class="sign-in-form__error" [class.sign-in-form__error--hide]="errorMsg().length === 0">
-            {{errorMsg()}}
-        </div>
         <div class="sign-in-form__block">
             <label for="username" class="sign-in-form__block--label">Username</label>
             <input id="username" type="text" class="sign-in-form__block--input" formControlName="username" placeholder="username">

@@ -21,12 +21,6 @@ $blue-color-1: #4ba9c8;
         flex-direction: column;
         gap: 1.5rem;
 
-        &__error {
-            &--hide {
-                display: none;
-            }
-        }
-
         &__block {
             align-self: center;
 

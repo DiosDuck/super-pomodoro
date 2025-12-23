@@ -1,9 +1,10 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { LocalStorageService } from '../../shared/services/local-storage-service';
+import { LocalStorageService } from '../../shared/services/local-storage';
 import { passwordMatchValidator } from '../register.validator';
 import { AuthService } from '../auth.service';
+import { ToastService } from '../../shared/services/toast';
 
 @Component({
   selector: 'app-register',
@@ -14,6 +15,7 @@ import { AuthService } from '../auth.service';
 export class Register {
   authService = inject(AuthService);
   localStorageService = inject(LocalStorageService);
+  toastService = inject(ToastService);
   router = inject(Router);
 
   registerForm = new FormGroup(
@@ -27,7 +29,7 @@ export class Register {
     {validators: [passwordMatchValidator]}
   );
 
-  errorMsg = signal<string>('');
+  errorRegister = false;
   isWaiting = false;
 
   async onSubmit() {
@@ -40,9 +42,11 @@ export class Register {
         email: this.registerForm.value.email!,
       });
 
+      this.toastService.addToast("Successfully registered, please sign in", "success");
       this.router.navigateByUrl('/auth/sign-in');
     } catch (err) {
-      this.errorMsg.set('Username already used, please try another one');
+      this.errorRegister = true;
+      this.toastService.addToast("Username is already taken", "error");
       this.isWaiting = false;
     }
   }
@@ -90,6 +94,6 @@ export class Register {
       return true;
     }
 
-    return controller.touched && (controller.invalid || this.errorMsg().length > 0);
+    return controller.touched && (controller.invalid || this.errorRegister);
   }
 }

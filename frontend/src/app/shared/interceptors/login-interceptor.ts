@@ -1,6 +1,6 @@
 import { HttpEvent, HttpHandlerFn, HttpHeaders, HttpRequest } from "@angular/common/http";
 import { Observable } from "rxjs";
-import { LocalStorageService } from "../services/local-storage-service";
+import { LocalStorageService } from "../services/local-storage";
 import { inject } from "@angular/core";
 
 export function userInterceptor(

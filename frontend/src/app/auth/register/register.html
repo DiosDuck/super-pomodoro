@@ -1,9 +1,6 @@
 <div class="register">
     <h1 class="register-title">Register</h1>
     <form class="register-form" [formGroup]="registerForm" (submit)="onSubmit()">
-        <div class="register-form__error" [class.register-form__error--hide]="errorMsg().length === 0">
-            {{errorMsg()}}
-        </div>
         <div class="register-form__block">
             <label for="username" class="register-form__block--label">Username</label>
             <input id="username" type="text" class="register-form__block--input" [class.register-form__block--invalid]="isInvalid('username')" formControlName="username" placeholder="username">

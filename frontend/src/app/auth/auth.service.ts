@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { LocalStorageService } from '../shared/services/local-storage-service';
-import { UserService } from '../shared/services/user-service';
+import { LocalStorageService } from '../shared/services/local-storage';
+import { UserService } from '../shared/services/user';
 import { LoginData, TokenResponse } from '../shared/models/user';
 import { RegisterData } from './register.model';
 

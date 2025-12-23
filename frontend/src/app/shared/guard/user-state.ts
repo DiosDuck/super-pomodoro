@@ -1,7 +1,7 @@
 import { inject } from "@angular/core";
 import { CanActivateChildFn, CanActivateFn, Router } from "@angular/router";
-import { UserService } from "../services/user-service";
-import { LocalStorageService } from "../services/local-storage-service";
+import { UserService } from "../services/user";
+import { LocalStorageService } from "../services/local-storage";
 
 export const unsignedGuard: CanActivateChildFn = async () => {
     const userService = inject(UserService);

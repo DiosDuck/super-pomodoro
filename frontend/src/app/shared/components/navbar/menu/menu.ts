@@ -1,8 +1,9 @@
 import { Component, inject, output } from '@angular/core';
 import { Router, RouterLink } from "@angular/router";
-import { NAV_MENU_ITEMS, navId } from '../config';
+import { NAV_MENU_ITEMS } from '../../../configs/nav-items';
 import { UserService } from '../../../services/user';
-import { LoggedInPipe } from '../pipe/user';
+import { LoggedInPipe } from '../../../pipe/user';
+import { navId } from '../../navbar.config';
 
 @Component({
   selector: 'app-nav-menu',
@@ -17,7 +18,7 @@ export class Menu {
   user = this.userService.currentUser;
 
   router = inject(Router);
-  
+
   onSelect = output<navId>();
 
   toggle() {

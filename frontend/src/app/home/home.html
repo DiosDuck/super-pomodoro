@@ -1,1 +1,13 @@
-<a routerLink="/pomodoro">Pomodoro</a>
+<div class="home">
+    <div class="home-title">Welcome, {{ user() ? user()!.displayName : 'user' }}!</div>
+    <ul class="home-list">
+        @for (navItem of (navItems | loggedIn: user()); track $index) {
+            <li class="home-list__item">
+                <a [routerLink]="navItem.url" class="home-list__item--link">{{ navItem.name }}</a>
+            </li>
+        }
+        <li class="home-list__item home-list__item--disabled">
+            <span>Coming Soon</span>
+        </li>
+    </ul>
+</div>

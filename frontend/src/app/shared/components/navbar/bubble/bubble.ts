@@ -1,5 +1,5 @@
 import { Component, computed, input, output } from '@angular/core';
-import { navId } from '../config';
+import { navId } from '../../navbar.config';
 
 @Component({
   selector: 'app-nav-bubble',

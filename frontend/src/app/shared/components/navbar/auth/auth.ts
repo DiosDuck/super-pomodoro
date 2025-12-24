@@ -1,8 +1,8 @@
 import { Component, inject, output } from '@angular/core';
 import { Router, RouterLink } from "@angular/router";
 import { UserService } from '../../../services/user';
-import { navId } from '../config';
 import { LastRouteService } from '../../../services/last-route';
+import { navId } from '../../navbar.config';
 
 @Component({
   selector: 'app-nav-auth',

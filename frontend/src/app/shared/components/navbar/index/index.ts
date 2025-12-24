@@ -1,9 +1,9 @@
 import { Component, inject, signal } from '@angular/core';
-import { navId } from '../config';
 import { Menu } from "../menu/menu";
 import { Auth } from '../auth/auth';
 import { Bubble } from "../bubble/bubble";
 import { LastRouteService } from '../../../services/last-route';
+import { navId } from '../../navbar.config';
 
 @Component({
   selector: 'app-navbar',

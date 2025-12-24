@@ -2,7 +2,7 @@ import { Component, inject, output } from '@angular/core';
 import { Router, RouterLink } from "@angular/router";
 import { NAV_MENU_ITEMS } from '../../../configs/nav-items';
 import { UserService } from '../../../services/user';
-import { LoggedInPipe } from '../../../pipe/user';
+import { LoggedInPipe } from '../../../pipes/user';
 import { navId } from '../../navbar.config';
 
 @Component({

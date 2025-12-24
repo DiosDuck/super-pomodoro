@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
-import { Settings } from '../models/settings';
-import { CounterService } from '../services/counter-service';
+import { Settings } from '../../models/settings';
+import { CounterService } from '../../services/counter-service';
 
 @Component({
   selector: 'app-pomodoro-index',

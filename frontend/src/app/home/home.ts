@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { RouterLink } from "@angular/router";
 import { NAV_MENU_ITEMS } from '../shared/configs/nav-items';
 import { UserService } from '../shared/services/user';
-import { LoggedInPipe } from '../shared/pipe/user';
+import { LoggedInPipe } from '../shared/pipes/user';
 
 @Component({
   selector: 'app-home',

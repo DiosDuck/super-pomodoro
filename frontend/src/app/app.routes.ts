@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { adminGuard } from './shared/guard/user-state';
+import { adminGuard } from './shared/guards/user-state';
 
 export const routes: Routes = [
     {
@@ -14,7 +14,7 @@ export const routes: Routes = [
     },
     {
         path: 'pomodoro',
-        loadComponent: () => import('./pomodoro/index/index').then(m => m.Index),
+        loadComponent: () => import('./pomodoro/components/index/index').then(m => m.Index),
     },
     {
         path: 'auth',

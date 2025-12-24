@@ -41,6 +41,10 @@ $blue-color-1: #4ba9c8;
                 &::placeholder {
                     color: var(--gray-color-2);
                 }
+
+                &:hover, &:focus {
+                    border-color: var(--black-color-2);
+                }
             }
 
             &--invalid {

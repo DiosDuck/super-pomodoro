@@ -1,5 +1,4 @@
-import { Component, signal } from '@angular/core';
-import { Settings } from '../../models/settings';
+import { Component, computed, inject, signal } from '@angular/core';
 import { CounterService } from '../../services/counter-service';
 
 @Component({
@@ -9,13 +8,20 @@ import { CounterService } from '../../services/counter-service';
   styleUrl: './index.scss'
 })
 export class Index {
-  settings = signal(new Settings);
-  counterService: CounterService;
-
-  constructor(
-    counterService: CounterService
-  ) {
-    this.counterService = counterService;
-    this.settings.set(counterService.getSettings());
-  }
+  counterService = inject(CounterService);
+  settings = signal(this.counterService.getSettings());
+  title = computed(
+    () => {
+      switch (this.settings().currentCycle) {
+        case 'idle':
+          return 'Welcome to pomodoro!';
+        case 'work':
+          return 'Let\'s focus now!';
+        case 'short-break':
+          return 'Take a rest now, you are doing great';
+        case 'long-break':
+          return 'Tale a longer break, should be proud of yourself now';
+      }
+    }
+  );
 }

@@ -1,16 +1,10 @@
-:host {
-    display: inline-block;
-    width: 100%;
-    height: 100vh;
-}
-
 .home {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 10rem;
-    height: 100%;
+    height: 100vh;
 
     &-title {
         font-size: 10rem;
@@ -60,9 +54,12 @@
                 }
             }
 
-            &:not(&--disabled) > *:hover {
-                border-color: var(--gray-color-4);
-                color: var(--gray-color-4);
+            &:not(&--disabled) {
+                & > *:hover,
+                & > *:focus {
+                    border-color: var(--gray-color-4);
+                    color: var(--gray-color-4);
+                }
             }
         }
     }

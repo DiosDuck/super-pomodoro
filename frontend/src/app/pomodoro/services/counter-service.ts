@@ -1,28 +1,27 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Settings } from '../models/settings';
+import { LocalStorageService } from '../../shared/services/local-storage';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CounterService {
-  static readonly sessionKey = 'pomodoro.settings';
+  _localStorageService = inject(LocalStorageService);
+  private readonly _sessionKey = 'pomodoro.settings';
 
   public setSettings(settings: Settings): void
   {
-    let data = JSON.stringify(settings);
-    localStorage.setItem(CounterService.sessionKey, data);
+    this._localStorageService.setObject(
+      this._sessionKey, 
+      settings
+    );
   }
 
   public getSettings(): Settings
   {
-    let data = localStorage.getItem(CounterService.sessionKey);
-    if (data === null) {
-      return this.createNewSetting();
-    }
-
-    let obj = JSON.parse(data);
-    if (obj instanceof Settings) {
-      return obj;
+    let data = this._localStorageService.getObject(this._sessionKey);
+    if (data instanceof Settings) {
+      return data;
     }
 
     return this.createNewSetting();
@@ -31,7 +30,7 @@ export class CounterService {
   private createNewSetting(): Settings
   {
     let setting = new Settings();
-    JSON.stringify(setting);
+    this.setSettings(setting);
     return setting;
   }
 }

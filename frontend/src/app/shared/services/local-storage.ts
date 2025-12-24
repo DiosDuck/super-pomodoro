@@ -21,6 +21,23 @@ export class LocalStorageService {
         this.remove(this._loginSessionToken);
     }
 
+    getObject(key: string): any
+    {
+        let rawData = this.get(key);
+        if (!rawData) {
+            return null;
+        }
+
+        let obj = JSON.parse(rawData);
+        return obj;
+    }
+
+    setObject(key: string, value: any): void
+    {
+        let rawData = JSON.stringify(value);
+        this.set(key, rawData);
+    }
+
     get(key: string): string | null
     {
         return localStorage.getItem(key);

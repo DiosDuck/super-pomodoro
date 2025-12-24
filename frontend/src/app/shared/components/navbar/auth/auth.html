@@ -10,11 +10,11 @@
 }
 <ul class="auth-menu__list">
     @if (user() === null) {
-        <li class="auth-menu__list--item" [class.auth-menu__list--selected]="'/auth/sign-in' === router.url" routerLink="/auth/sign-in" (click)="toggle()">Login</li>
-        <li class="auth-menu__list--item" [class.auth-menu__list--selected]="'/auth/register' === router.url" routerLink="/auth/register" (click)="toggle()">Register</li>
+        <li class="auth-menu__list--item" [tabIndex]="-1" [class.auth-menu__list--selected]="'/auth/sign-in' === router.url" routerLink="/auth/sign-in" (click)="toggle()">Login</li>
+        <li class="auth-menu__list--item" [tabIndex]="-1" [class.auth-menu__list--selected]="'/auth/register' === router.url" routerLink="/auth/register" (click)="toggle()">Register</li>
     }
     @else {
         <!--<li class="auth-menu__list--item" [class.auth-menu__list--selected]="'/profile' === router.url" routerLink="/profile">Profile</li>-->
-        <li class="auth-menu__list--item" (click)="toggle(); onLogout()">Logout</li>
+        <li class="auth-menu__list--item" [tabIndex]="-1" (click)="toggle(); onLogout()">Logout</li>
     }
 </ul>

@@ -1,5 +1,5 @@
-import { Component, computed, inject, signal } from '@angular/core';
-import { CounterService } from '../../services/counter-service';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { StorageService } from '../../pomodoro.services';
 
 @Component({
   selector: 'app-pomodoro-index',
@@ -8,11 +8,11 @@ import { CounterService } from '../../services/counter-service';
   styleUrl: './index.scss'
 })
 export class Index {
-  counterService = inject(CounterService);
-  settings = signal(this.counterService.getSettings());
+  storageService = inject(StorageService);
+  cycle = signal(this.storageService.getCycle());
   title = computed(
     () => {
-      switch (this.settings().currentCycle) {
+      switch (this.cycle().currentCycle) {
         case 'idle':
           return 'Welcome to pomodoro!';
         case 'work':
@@ -24,4 +24,13 @@ export class Index {
       }
     }
   );
+
+  timer = signal<number>(0);
+  timerStarted = signal<boolean>(false);
+  isWaitingFormConfirmation = signal<boolean>(false);
+  stopNextTitleButton = computed(() => this.isWaitingFormConfirmation() ? 'Next' : 'Stop');
+
+  onlyStopNextButton() {
+    return this.isWaitingFormConfirmation();
+  }
 }

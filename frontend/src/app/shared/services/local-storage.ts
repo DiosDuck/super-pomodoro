@@ -21,7 +21,7 @@ export class LocalStorageService {
         this.remove(this._loginSessionToken);
     }
 
-    getObject(key: string): any
+    getJsonParsed(key: string): any
     {
         let rawData = this.get(key);
         if (!rawData) {
@@ -32,7 +32,7 @@ export class LocalStorageService {
         return obj;
     }
 
-    setObject(key: string, value: any): void
+    parseAndSet(key: string, value: any): void
     {
         let rawData = JSON.stringify(value);
         this.set(key, rawData);

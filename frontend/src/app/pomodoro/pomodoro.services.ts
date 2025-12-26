@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal, Signal, WritableSignal } from '@angular/core';
 import { LocalStorageService } from '../shared/services/local-storage';
 import { Cycle, Settings } from './pomodoro.model';
 import { BehaviorSubject, interval, Observable, Subject, takeUntil, takeWhile } from 'rxjs';
@@ -72,7 +72,7 @@ export class StorageService {
   {
     let cycle: Cycle = {
       currentCycle: 'idle',
-      currentNumberOfCycle: 0,
+      currentNumberOfCycle: 1,
       dateTime: new Date(),
       type: this._cycleKey,
     };
@@ -121,7 +121,10 @@ export class HandleCounterService {
 })
 export class CounterService {
   private _settings: Settings;
-  private _cycle: Cycle;
+  private _cycle: WritableSignal<Cycle>;
+  public cycle: Signal<Cycle>;
+  private _waitingConfirmation: WritableSignal<boolean>;
+  public waitingConfirmation: Signal<boolean>;
 
   private _stop: Subject<void>;
   private _remainingSeconds: BehaviorSubject<number>;
@@ -131,10 +134,13 @@ export class CounterService {
   public finish: Observable<void>;
 
   constructor(
-    storageService: StorageService,
+    private _storageService: StorageService,
   ) {
-    this._settings = storageService.getSettings();
-    this._cycle = storageService.getCycle();
+    this._settings = this._storageService.getSettings();
+    this._cycle = signal(this._storageService.getCycle());
+    this.cycle = this._cycle.asReadonly();
+    this._waitingConfirmation = signal(false);
+    this.waitingConfirmation = this._waitingConfirmation.asReadonly();
 
     this._stop = new Subject<void>();
     this._remainingSeconds = new BehaviorSubject<number>(this._getSeconds());
@@ -145,7 +151,39 @@ export class CounterService {
 
   pomodoroStart() : void 
   {
+    if (this._cycle().currentCycle === 'idle') {
+      this._cycle.set({
+        ...this._cycle(),
+        currentCycle: 'work',
+      });
+      this._storageService.setCycle(this._cycle());
+    }
     this._start(this._getSeconds());
+  }
+
+  pomodoroContinue() : void
+  {
+    this._start(this._remainingSeconds.value);
+  }
+
+  pomodoroRewind() : void
+  {
+    this.pomodoroStop();
+    this._remainingSeconds.next(this._getSeconds());
+  }
+
+  pomodoroReset() : void
+  {
+    this.pomodoroStop();
+    this._cycle.set({
+      currentCycle: 'idle',
+      currentNumberOfCycle: 1,
+      dateTime: new Date(),
+      type: 'pomodoro.cycle',
+    });
+    this._storageService.setCycle(this._cycle());
+    this._remainingSeconds.next(this._getSeconds());
+    this._waitingConfirmation.set(false);
   }
 
   waitingConfirmationStart() : void
@@ -153,32 +191,42 @@ export class CounterService {
     this._start(this._settings.maxConfirmationTime * 60);
   }
 
-  stop(): void
+  pomodoroStop(): void
   {
     this._stop.next();
   }
 
-  next() : void
+  pomodoroNext() : void
   {
-    this.stop();
-    if (this._cycle.currentCycle !== 'work') {
-      this._cycle.currentCycle = 'work';
-      this._cycle.currentNumberOfCycle++;
-      return;
-    }
-
-    if (this._cycle.currentNumberOfCycle % this._settings.numberOfSessions === 0) {
-      this._cycle.currentCycle = 'long-break';
+    this.pomodoroStop();
+    if (this._cycle().currentCycle !== 'work') {
+      this._cycle.set({
+        ...this._cycle(),
+        currentCycle: 'work',
+      })
+    } else if (this._cycle().currentNumberOfCycle % this._settings.numberOfSessions === 0) {
+      this._cycle.set({
+        ...this._cycle(),
+        currentCycle: 'long-break',
+        currentNumberOfCycle: this._cycle().currentNumberOfCycle + 1,
+      });
     } else {
-      this._cycle.currentCycle = 'short-break';
+      this._cycle.set({
+        ...this._cycle(),
+        currentCycle: 'short-break',
+        currentNumberOfCycle: this._cycle().currentNumberOfCycle + 1,
+      });
     }
+    this._waitingConfirmation.set(false);
+    this._storageService.setCycle(this._cycle());
+    this._remainingSeconds.next(this._getSeconds());
   }
 
   private _getSeconds(): number
   {
     let time: number;
 
-    switch (this._cycle.currentCycle) {
+    switch (this._cycle().currentCycle) {
       case 'idle':
       case 'work':
         time = this._settings.sessionTime;
@@ -196,7 +244,7 @@ export class CounterService {
 
   private _start(numberSeconds : number) : void
   {
-    this.stop();
+    this.pomodoroStop();
 
     this._remainingSeconds.next(numberSeconds);
     interval(1000)
@@ -210,8 +258,32 @@ export class CounterService {
 
         if (next === 0) {
           this._finish.next();
+          this._confirmationWaiting();
         }
       })
     ;
+  }
+
+  private _confirmationWaiting() : void
+  {
+    this.pomodoroStop();
+
+    this._remainingSeconds.next(this._settings.maxConfirmationTime * 60);
+    this._waitingConfirmation.set(true);
+    
+    interval(1000)
+      .pipe(
+        takeUntil(this._stop),
+        takeWhile(() => this._remainingSeconds.value > 0),
+      )
+      .subscribe(() => {
+        const next = this._remainingSeconds.value - 1;
+        this._remainingSeconds.next(next);
+
+        if (next === 0) {
+          this._finish.next();
+          this.pomodoroReset();
+        }
+      });
   }
 }

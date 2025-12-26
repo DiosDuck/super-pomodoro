@@ -1,13 +1,13 @@
 <div class="pomodoro">
     <h1 class="pomodoro-title">{{ title() }}</h1>
     <div class="pomodoro-display">
-        <div class="pomodoro-display__timer">25:00</div>
-        <div class="pomodoro-display__cycles">Number of cycles: {{ this.cycle().currentNumberOfCycle }}</div>
+        <div class="pomodoro-display__timer">{{ minutes() }}:{{ seconds() }}</div>
+        <div class="pomodoro-display__cycles">Number of cycles done: {{ this.cycle().currentNumberOfCycle - 1 }}</div>
     </div>
     <div class="pomodoro-buttons">
-        <button class="pomodoro-button" [disabled]="onlyStopNextButton()">Start</button>
-        <button class="pomodoro-button" [disabled]="!onlyStopNextButton()">Stop</button>
-        <button class="pomodoro-button" [disabled]="onlyStopNextButton()">Rewind</button>
-        <button class="pomodoro-button" [disabled]="onlyStopNextButton()">Reset</button>
+        <button class="pomodoro-button" (click)="onStart()" [disabled]="onlyStopNextButton()">Start</button>
+        <button class="pomodoro-button" (click)="onStop()" [disabled]="!onlyStopNextButton()">{{ stopNextTitleButton() }}</button>
+        <button class="pomodoro-button" (click)="onRewind()" [disabled]="onlyStopNextButton()">Rewind</button>
+        <button class="pomodoro-button" (click)="onReset()" [disabled]="onlyStopNextButton()">Reset</button>
     </div>
 </div>

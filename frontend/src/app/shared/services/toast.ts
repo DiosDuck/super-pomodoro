@@ -1,4 +1,4 @@
-import { computed, Injectable, signal } from "@angular/core";
+import { Injectable, signal } from "@angular/core";
 import { status, Toast } from "../models/toast";
 
 @Injectable({
@@ -8,7 +8,7 @@ export class ToastService {
     private _index : number = 0;
     private _toastList = signal<Toast[]>([]);
 
-    toastList = computed(() => this._toastList());
+    toastList = this._toastList.asReadonly();
 
     addToast(message: string, status: status = "note"): number 
     {

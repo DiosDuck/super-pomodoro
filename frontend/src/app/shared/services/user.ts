@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { User, nullableUser } from '../models/user';
 import { LocalStorageService } from './local-storage';
@@ -9,7 +9,7 @@ import { LocalStorageService } from './local-storage';
 })
 export class UserService {
     private _user = signal<nullableUser>(null);
-    public currentUser = computed<nullableUser>(() => this._user());
+    public currentUser = this._user.asReadonly();
 
     constructor(private _http: HttpClient, private _localStorageService: LocalStorageService) {
         this.loadUser();

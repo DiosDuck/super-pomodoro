@@ -22,7 +22,7 @@ export class StorageService {
   public getSettings(): Settings
   {
     let data = this._localStorageService.getJsonParsed(this._settingsKey);
-    if ('type' in data && data.type === this._settingsKey) {
+    if (data !== null && 'type' in data && data.type === this._settingsKey) {
       return data;
     }
 
@@ -40,8 +40,15 @@ export class StorageService {
   public getCycle(): Cycle
   {
     let data = this._localStorageService.getJsonParsed(this._cycleKey);
-    if ('type' in data && data.type === this._cycleKey && this.isValidCycle(data)) {
-      return data;
+    if (data !== null && 'type' in data && data.type === this._cycleKey) {
+      let convertedData: Cycle = {
+        ...data,
+        dateTime: new Date(data.dateTime),
+      };
+      
+      if (this.isValidCycle(convertedData)) {
+        return data;
+      }
     }
 
     return this.createNewCycle();

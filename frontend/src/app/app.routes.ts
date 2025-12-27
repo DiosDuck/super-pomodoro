@@ -14,11 +14,11 @@ export const routes: Routes = [
     },
     {
         path: 'pomodoro',
-        loadComponent: () => import('./pomodoro/components/index/index').then(m => m.Index),
+        loadChildren: () => import('./pomodoro/pomodoro.routes').then(m => m.POMODORO_ROUTES),
     },
     {
         path: 'auth',
-        loadChildren: () => import('./auth/routes').then(m => m.AUTH_ROUTES),
+        loadChildren: () => import('./auth/auth.routes').then(m => m.AUTH_ROUTES),
     },
     {
         path: 'not-found',

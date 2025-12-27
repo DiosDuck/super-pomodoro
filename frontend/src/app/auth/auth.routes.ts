@@ -13,7 +13,7 @@ export const AUTH_ROUTES: Routes = [
         loadComponent: () => import('./register/register').then(m => m.Register),
     },
     {
-        path: '',
+        path: '**',
         redirectTo: '/not-found',
     }
 ];

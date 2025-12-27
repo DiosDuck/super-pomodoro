@@ -7,7 +7,7 @@ import { BehaviorSubject, interval, Observable, Subject, takeUntil, takeWhile } 
   providedIn: 'root'
 })
 export class StorageService {
-  _localStorageService = inject(LocalStorageService);
+  private _localStorageService = inject(LocalStorageService);
   private readonly _settingsKey = 'pomodoro.settings';
   private readonly _cycleKey = 'pomodoro.cycle';
 

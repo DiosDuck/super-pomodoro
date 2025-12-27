@@ -39,6 +39,7 @@ export class Index implements OnInit {
 
   ngOnInit(): void 
   { 
+    this.alarmClockAudio.volume = 0;
     this.counterService.remainingSeconds.subscribe((time: number) => {
       this.timer.set(time);
     });

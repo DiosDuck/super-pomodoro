@@ -166,6 +166,11 @@ export class CounterService {
     this._start(this._remainingSeconds.value);
   }
 
+  pomodoroIncrement(count: number) : void
+  {
+    this._start(this._remainingSeconds.value + count * 60);
+  }
+
   pomodoroRewind() : void
   {
     this.pomodoroStop();

@@ -1,9 +1,10 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CounterService } from '../../pomodoro.services';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-pomodoro-index',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './index.html',
   styleUrl: './index.scss'
 })
@@ -31,10 +32,9 @@ export class Index implements OnInit {
   timer = signal<number>(0);
   minutes = computed(() => Math.floor(this.timer() / 60).toString().padStart(2, "0"));
   seconds = computed(() => (this.timer() % 60).toString().padStart(2, "0"));
-  timerStarted: boolean = false;
-  sessionStarted: boolean = false;
+  timerStarted = signal<boolean>(false);
+  sessionStarted = signal<boolean>(false);
   isWaitingFormConfirmation = this.counterService.waitingConfirmation;
-  stopNextTitleButton = computed(() => this.isWaitingFormConfirmation() ? 'Next' : 'Stop');
   alarmClockAudio = new Audio('assets/audio/alarm-clock.mp3');
 
   ngOnInit(): void 
@@ -45,53 +45,57 @@ export class Index implements OnInit {
     this.counterService.finish.subscribe(() => {
       if (this.isWaitingFormConfirmation()) {
         console.log('Progress lost');
+        this.timerStarted.set(false);
+        this.sessionStarted.set(false);
       } else {
         console.log('Waitint to continue');
+        this.alarmClockAudio = new Audio('assets/audio/alarm-clock.mp3');
         this.alarmClockAudio.play();
       }
     })
   }
 
-  onlyStopNextButton(): boolean 
-  {
-    return this.timerStarted;
-  }
-
   onStart(): void
   {
-    if (this.sessionStarted) {
+    if (this.sessionStarted()) {
       this.counterService.pomodoroContinue()
     } else {
-      this.sessionStarted = true;
+      this.sessionStarted.set(true);
       this.counterService.pomodoroStart()
     }
-    this.timerStarted = true;
+    this.timerStarted.set(true);
   }
 
   onStop(): void
   {
-    this.timerStarted = false;
+    this.timerStarted.set(false);
+    this.counterService.pomodoroStop();
+  }
 
-    if (this.isWaitingFormConfirmation()) {
-      this.sessionStarted = false;
-      this.alarmClockAudio.pause();
-      this.counterService.pomodoroNext();
-    } else {
-      this.counterService.pomodoroStop();
-    }
+  onNext(): void
+  {
+    this.timerStarted.set(false);
+    this.sessionStarted.set(false);
+    this.alarmClockAudio.pause();
+    this.counterService.pomodoroNext();
+  }
+
+  onIncrement(count: number): void
+  {
+    this.counterService.pomodoroIncrement(count);
   }
 
   onRewind(): void
   {
-    this.sessionStarted = false;
-    this.timerStarted = false;
+    this.sessionStarted.set(false);
+    this.timerStarted.set(false);
     this.counterService.pomodoroRewind();
   }
 
   onReset(): void
   {
-    this.sessionStarted = false;
-    this.timerStarted = false;
+    this.sessionStarted.set(false);
+    this.timerStarted.set(false);
     this.counterService.pomodoroReset();
   }
 }

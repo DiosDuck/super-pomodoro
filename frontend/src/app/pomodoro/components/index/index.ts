@@ -35,6 +35,7 @@ export class Index implements OnInit {
   sessionStarted: boolean = false;
   isWaitingFormConfirmation = this.counterService.waitingConfirmation;
   stopNextTitleButton = computed(() => this.isWaitingFormConfirmation() ? 'Next' : 'Stop');
+  alarmClockAudio = new Audio('assets/audio/alarm-clock.mp3');
 
   ngOnInit(): void 
   { 
@@ -46,6 +47,7 @@ export class Index implements OnInit {
         console.log('Progress lost');
       } else {
         console.log('Waitint to continue');
+        this.alarmClockAudio.play();
       }
     })
   }
@@ -72,6 +74,7 @@ export class Index implements OnInit {
 
     if (this.isWaitingFormConfirmation()) {
       this.sessionStarted = false;
+      this.alarmClockAudio.pause();
       this.counterService.pomodoroNext();
     } else {
       this.counterService.pomodoroStop();

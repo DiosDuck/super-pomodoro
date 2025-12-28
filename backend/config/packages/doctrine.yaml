@@ -18,12 +18,18 @@ doctrine:
             Doctrine\DBAL\Platforms\PostgreSQLPlatform: identity
         auto_mapping: true
         mappings:
-            App\Authentication:
+            Authentication:
                 type: attribute
                 is_bundle: false
                 dir: '%kernel.project_dir%/src/Authentication/Entity'
                 prefix: 'App\Authentication\Entity'
-                alias: App\Authentication
+                alias: Authentication
+            Pomodoro:
+                type: attribute
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Pomodoro/Entity'
+                prefix: 'App\Pomodoro\Entity'
+                alias: Pomodoro
         controller_resolver:
             auto_mapping: false
 

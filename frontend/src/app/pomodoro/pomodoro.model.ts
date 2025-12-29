@@ -1,9 +1,12 @@
-export interface Settings {
-    sessionTime: number,
-    shortPauseTime: number,
-    bigPauseTime: number,
-    numberOfSessions: number,
+export interface SettingsHttp {
+    workTime: number,
+    shortBreakTime: number,
+    longBreakTime: number,
+    cyclesBeforeLongBreak: number,
     maxConfirmationTime: number,
+}
+
+export interface Settings extends SettingsHttp {
     type: 'pomodoro.settings',
 }
 

@@ -24,10 +24,10 @@ export class Settings implements OnInit {
     ngOnInit(): void 
     {
         this.settingsForm.touched;
-        this.settingsForm.get('workTime')!.setValue(this.settings.sessionTime);
-        this.settingsForm.get('shortBreakTime')!.setValue(this.settings.shortPauseTime);
-        this.settingsForm.get('longBreakTime')!.setValue(this.settings.bigPauseTime);
-        this.settingsForm.get('numberOfCycles')!.setValue(this.settings.numberOfSessions);
+        this.settingsForm.get('workTime')!.setValue(this.settings.workTime);
+        this.settingsForm.get('shortBreakTime')!.setValue(this.settings.shortBreakTime);
+        this.settingsForm.get('longBreakTime')!.setValue(this.settings.longBreakTime);
+        this.settingsForm.get('numberOfCycles')!.setValue(this.settings.cyclesBeforeLongBreak);
         this.settingsForm.get('maxConfirmationTime')!.setValue(this.settings.maxConfirmationTime);
     }
 
@@ -35,10 +35,10 @@ export class Settings implements OnInit {
     {
         let value = this.settingsForm.value;
         this.settings = {
-            sessionTime: value.workTime!,
-            shortPauseTime: value.shortBreakTime!,
-            bigPauseTime: value.longBreakTime!,
-            numberOfSessions: value.numberOfCycles!,
+            workTime: value.workTime!,
+            shortBreakTime: value.shortBreakTime!,
+            longBreakTime: value.longBreakTime!,
+            cyclesBeforeLongBreak: value.numberOfCycles!,
             maxConfirmationTime: value.maxConfirmationTime!,
             type: 'pomodoro.settings',
         }

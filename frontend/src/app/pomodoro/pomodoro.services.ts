@@ -57,10 +57,10 @@ export class StorageService {
   private createNewSetting(): Settings
   {
     let setting: Settings = {
-      sessionTime: 25,
-      shortPauseTime: 5,
-      bigPauseTime: 15,
-      numberOfSessions: 4,
+      workTime: 25,
+      shortBreakTime: 5,
+      longBreakTime: 15,
+      cyclesBeforeLongBreak: 4,
       maxConfirmationTime: 1,
       type: this._settingsKey,
     };
@@ -209,7 +209,7 @@ export class CounterService {
         ...this._cycle(),
         currentCycle: 'work',
       })
-    } else if (this._cycle().currentNumberOfCycle % this._settings.numberOfSessions === 0) {
+    } else if (this._cycle().currentNumberOfCycle % this._settings.cyclesBeforeLongBreak === 0) {
       this._cycle.set({
         ...this._cycle(),
         currentCycle: 'long-break',
@@ -234,13 +234,13 @@ export class CounterService {
     switch (this._cycle().currentCycle) {
       case 'idle':
       case 'work':
-        time = this._settings.sessionTime;
+        time = this._settings.workTime;
         break;
       case 'short-break':
-        time = this._settings.shortPauseTime;
+        time = this._settings.shortBreakTime;
         break;
       case 'long-break':
-        time = this._settings.bigPauseTime;
+        time = this._settings.longBreakTime;
         break;
     }
 

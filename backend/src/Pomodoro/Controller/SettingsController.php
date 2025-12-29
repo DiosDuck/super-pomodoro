@@ -86,6 +86,10 @@ class SettingsController extends AbstractController {
         response: 401,
         description: 'User not signed in',
     )]
+    #[OA\Response(
+        response: 422,
+        description: 'Bad format',
+    )]
     public function createSettings(
         #[MapRequestPayload] SettingsDTO $settingsDTO,
         EntityManagerInterface $entityManager,
@@ -95,6 +99,13 @@ class SettingsController extends AbstractController {
             return $this->json(
                 ['message' => 'User not logged in'],
                 JsonResponse::HTTP_UNAUTHORIZED,
+            );
+        }
+
+        if (!$settingsDTO->isValid()) {
+            return $this->json(
+                ['message' => 'Bad format'],
+                JsonResponse::HTTP_UNPROCESSABLE_ENTITY,
             );
         }
 
@@ -133,6 +144,10 @@ class SettingsController extends AbstractController {
         response: 404,
         description: 'Settings not found',
     )]
+    #[OA\Response(
+        response: 422,
+        description: 'Bad format',
+    )]
     public function updateSettings(
         #[MapRequestPayload] SettingsDTO $settingsDTO,
         SettingsRepository $settingRepository,
@@ -143,6 +158,13 @@ class SettingsController extends AbstractController {
             return $this->json(
                 ['message' => 'User not logged in'],
                 JsonResponse::HTTP_UNAUTHORIZED,
+            );
+        }
+
+        if (!$settingsDTO->isValid()) {
+            return $this->json(
+                ['message' => 'Bad format'],
+                JsonResponse::HTTP_UNPROCESSABLE_ENTITY,
             );
         }
 

@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable, signal } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
+import { inject, Injectable, signal } from '@angular/core';
+import { firstValueFrom, ReplaySubject } from 'rxjs';
 import { User, nullableUser } from '../models/user';
 import { LocalStorageService } from './local-storage';
 
@@ -8,12 +8,11 @@ import { LocalStorageService } from './local-storage';
   providedIn: 'root'
 })
 export class UserService {
-    private _user = signal<nullableUser>(null);
-    public currentUser = this._user.asReadonly();
+    private _user = new ReplaySubject<nullableUser>(1);
+    user = this._user.asObservable();
 
-    constructor(private _http: HttpClient, private _localStorageService: LocalStorageService) {
-        this.loadUser();
-    }
+    private _http = inject(HttpClient);
+    private _localStorageService = inject(LocalStorageService);
 
     logout(): void
     {
@@ -22,10 +21,6 @@ export class UserService {
     }
 
     async loadUser(): Promise<void> {
-        if (this._user()) {
-            return;
-        }
-
         const token = this._localStorageService.getUserToken();
         if (!token) {
             this.setUser(null);
@@ -46,8 +41,8 @@ export class UserService {
         this.setUser(user);
     }
 
-    private setUser(user : nullableUser): void
+    private setUser(user: nullableUser): void
     {
-        this._user.set(user);
+        this._user.next(user);
     }
 }

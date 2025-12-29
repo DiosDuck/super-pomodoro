@@ -1,22 +1,24 @@
 import { inject } from "@angular/core";
 import { CanActivateChildFn, CanActivateFn, Router } from "@angular/router";
 import { UserService } from "../services/user";
+import { filter, map, take } from "rxjs";
 
-export const unsignedGuard: CanActivateChildFn = async () => {
+export const unsignedGuard: CanActivateChildFn = () => {
     const userService = inject(UserService);
-    await userService.loadUser();
 
-    return userService.currentUser() === null;
+    return userService.user.pipe(
+        filter(user => undefined !== user),
+        take(1),
+        map(user => user === null),
+    );
 }
 
-export const adminGuard: CanActivateFn = async () => {
+export const adminGuard: CanActivateFn = () => {
     const userService = inject(UserService);
-    await userService.loadUser();
     
-    let user = userService.currentUser();
-    if (user === null) {
-        return false;
-    }
-
-    return user.roles.includes("ROLE_ADMIN");
+    return userService.user.pipe(
+        filter(user => undefined !== user),
+        take(1),
+        map(user => user !== null && user.roles.includes("ROLE_ADMIN")),
+    );
 }

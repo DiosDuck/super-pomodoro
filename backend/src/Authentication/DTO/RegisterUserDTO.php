@@ -5,7 +5,6 @@ namespace App\Authentication\DTO;
 use OpenApi\Attributes as OA;
 
 #[OA\Schema(
-    schema: 'RegisterUserDTO',
     title: 'Register User Schema',
     description: 'Register User Schema for register into DB',
 )]

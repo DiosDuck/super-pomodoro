@@ -3,11 +3,12 @@
 namespace App\Pomodoro\Entity;
 
 use App\Authentication\Entity\User;
-use App\Pomodoro\Repository\SettingRepository;
+use App\Pomodoro\Repository\SettingsRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: SettingRepository::class)]
-class Setting
+#[ORM\Entity(repositoryClass: SettingsRepository::class)]
+#[ORM\Table(name: 'pomodoro_settings')]
+class Settings
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -15,7 +16,7 @@ class Setting
     private ?int $id = null;
 
     #[ORM\OneToOne(targetEntity: User::class)]
-    #[ORM\Column(name: 'userId')]
+    #[ORM\JoinColumn(name: 'userId', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
     private ?User $user = null;
 
     #[ORM\Column]

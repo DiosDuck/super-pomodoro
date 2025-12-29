@@ -2,22 +2,33 @@
 
 namespace App\Pomodoro\Repository;
 
-use App\Pomodoro\Entity\Setting;
+use App\Authentication\Entity\User;
+use App\Pomodoro\Entity\Settings;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Setting>
+ * @extends ServiceEntityRepository<Settings>
  */
-class SettingRepository extends ServiceEntityRepository
+class SettingsRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Setting::class);
+        parent::__construct($registry, Settings::class);
+    }
+
+    public function findOneByUser(User $user): ?Settings
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.user = :user')
+            ->setParameter(':user', $user)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
     }
 
     //    /**
-    //     * @return Setting[] Returns an array of Setting objects
+    //     * @return Settings[] Returns an array of Settings objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -31,7 +42,7 @@ class SettingRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Setting
+    //    public function findOneBySomeField($value): ?Settings
     //    {
     //        return $this->createQueryBuilder('s')
     //            ->andWhere('s.exampleField = :val')

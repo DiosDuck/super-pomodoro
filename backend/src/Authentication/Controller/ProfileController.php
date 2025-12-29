@@ -31,15 +31,15 @@ class ProfileController extends AbstractController {
         )
     )]
     #[OA\Response(
-        response: 403,
+        response: 401,
         description: 'User not logged in ',
     )]
     public function profile(#[CurrentUser] ?User $user): JsonResponse
     {
         if (null === $user) {
             return $this->json(
-                ['message' => 'Not logged in'],
-                JsonResponse::HTTP_FORBIDDEN,
+                ['message' => 'User not logged in'],
+                JsonResponse::HTTP_UNAUTHORIZED,
             );
         }
 

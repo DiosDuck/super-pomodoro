@@ -8,7 +8,6 @@ use App\Authentication\Entity\User;
 use OpenApi\Attributes as OA;
 
 #[OA\Schema(
-    schema: 'UserDTO',
     title: 'User Schema',
     description: 'User Schema for basic info',
 )]

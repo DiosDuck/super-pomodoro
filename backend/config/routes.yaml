@@ -10,6 +10,12 @@ controllers_auth:
         namespace: App\Authentication\Controller
     type: attribute
 
+controllers_pomodoro:
+    resource:
+        path: ../src/Pomodoro/Controller
+        namespace: App\Pomodoro\Controller
+    type: attribute
+
 # login path
 api_auth_login:
     path: /api/auth/login

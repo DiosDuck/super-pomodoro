@@ -7,7 +7,6 @@ namespace App\Health\Model;
 use OpenApi\Attributes as OA;
 
 #[OA\Schema(
-    schema: 'Ping',
     title: 'Ping Schema',
     description: 'Ping Schema',
 )]

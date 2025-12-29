@@ -57,6 +57,11 @@ $blue-color-1: #4ba9c8;
                     transform: none;
                 }
 
+                &::-webkit-inner-spin-button {
+                    appearance: none;
+                    margin: 0;
+                }
+
                 &::placeholder {
                     color: var(--gray-color-2);
                 }

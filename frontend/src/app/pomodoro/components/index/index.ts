@@ -70,24 +70,22 @@ export class Index implements OnInit {
     });
     this.counterService.finish.subscribe(() => {
       if (this.isWaitingFormConfirmation()) {
-        console.log('Progress lost');
         this.timerStarted.set(false);
         this.sessionStarted.set(false);
       } else {
-        console.log('Waitint to continue');
         this.alarmClockAudio = new Audio('assets/audio/alarm-clock.mp3');
         this.alarmClockAudio.play();
       }
     })
   }
 
-  onStart(): void
+  async onStart(): Promise<void>
   {
     if (this.sessionStarted()) {
-      this.counterService.pomodoroContinue()
+      await this.counterService.pomodoroContinue()
     } else {
       this.sessionStarted.set(true);
-      this.counterService.pomodoroStart()
+      await this.counterService.pomodoroStart()
     }
     this.timerStarted.set(true);
   }
@@ -98,30 +96,30 @@ export class Index implements OnInit {
     this.counterService.pomodoroStop();
   }
 
-  onNext(): void
+  async onNext(): Promise<void>
   {
     this.timerStarted.set(false);
     this.sessionStarted.set(false);
     this.alarmClockAudio.pause();
-    this.counterService.pomodoroNext();
+    await this.counterService.pomodoroNext();
   }
 
-  onIncrement(count: number): void
+  async onIncrement(count: number): Promise<void>
   {
-    this.counterService.pomodoroIncrement(count);
+    await this.counterService.pomodoroIncrement(count);
   }
 
-  onRewind(): void
-  {
-    this.sessionStarted.set(false);
-    this.timerStarted.set(false);
-    this.counterService.pomodoroRewind();
-  }
-
-  onReset(): void
+  async onRewind(): Promise<void>
   {
     this.sessionStarted.set(false);
     this.timerStarted.set(false);
-    this.counterService.pomodoroReset();
+    await this.counterService.pomodoroRewind();
+  }
+
+  async onReset(): Promise<void>
+  {
+    this.sessionStarted.set(false);
+    this.timerStarted.set(false);
+    await this.counterService.pomodoroReset();
   }
 }

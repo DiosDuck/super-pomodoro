@@ -13,6 +13,7 @@ export function userInterceptor(
         return next(req);
     }
 
-    req.headers.append('Authorization', `Bearer ${token}`);
-    return next(req);
+    return next(req.clone({
+      headers: req.headers.set('Authorization', `Bearer ${token}`),
+    }));
 }

@@ -21,18 +21,14 @@ export class UserService {
     }
 
     async loadUser(): Promise<void> {
-        const token = this._localStorageService.getUserToken();
-        if (!token) {
+        if (!this._localStorageService.getUserToken()) {
             this.setUser(null);
             return;
         }
 
         let user : nullableUser;
         try {
-            const headers = new HttpHeaders({
-                Authorization: `Bearer ${token}`,
-            });
-            user = await firstValueFrom(this._http.get<User>('/api/profile', {headers: headers}));
+            user = await firstValueFrom(this._http.get<User>('/api/profile'));
         } catch (err) {
             user = null;
             this._localStorageService.removeUserToken();

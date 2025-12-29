@@ -1,25 +1,111 @@
 import { inject, Injectable, signal, Signal, WritableSignal } from '@angular/core';
 import { LocalStorageService } from '../shared/services/local-storage';
-import { Cycle, Settings } from './pomodoro.model';
-import { BehaviorSubject, interval, Observable, Subject, takeUntil, takeWhile } from 'rxjs';
+import { Cycle, Settings, SettingsHttp } from './pomodoro.model';
+import { BehaviorSubject, firstValueFrom, interval, Observable, ReplaySubject, Subject, switchMap, take, takeUntil, takeWhile } from 'rxjs';
+import { UserService } from '../shared/services/user';
+import { HttpClient } from '@angular/common/http';
+import { ToastService } from '../shared/services/toast';
 
 @Injectable({
   providedIn: 'root'
 })
-export class StorageService {
-  private _localStorageService = inject(LocalStorageService);
-  private readonly _settingsKey = 'pomodoro.settings';
-  private readonly _cycleKey = 'pomodoro.cycle';
+export class SettingsService {
+  private _settings = new ReplaySubject<Settings>(1);
+  settings = this._settings.asObservable();
 
-  public setSettings(settings: Settings): void
-  {
-    this._localStorageService.parseAndSet(
-      this._settingsKey, 
-      settings
-    );
+  private readonly _settingsKey = 'pomodoro.settings';
+
+  constructor(
+    private _localStorageService: LocalStorageService,
+    private _userService: UserService,
+    private _toastService: ToastService,
+    private _http: HttpClient,
+  ) {
+    this.loadSettings();
   }
 
-  public getSettings(): Settings
+  loadSettings(): void 
+  {
+    this._userService.user
+      .pipe(
+        switchMap(
+          user => user === null ? this.loadLocalStorageSettings() : this.loadUserSettings()
+        )
+      )
+      .subscribe(
+        settings => {
+          this._settings.next(settings);
+          this.setLocalStorageSettings(settings);
+        }
+      );
+  }
+
+  updateSettings(settings: Settings): void 
+  {
+    this._userService.user
+      .pipe(
+        switchMap(
+          user => user === null ? this.updateLocalStorageSettings(settings) : this.updateUserSettings(settings) 
+        )
+      )
+      .subscribe(
+        settings => {
+          this._settings.next(settings);
+          this.setLocalStorageSettings(settings);
+        }
+      )
+  }
+
+  async getSettings(): Promise<Settings>
+  {
+    return await firstValueFrom(this.settings);
+  }
+
+  private async loadUserSettings(): Promise<Settings>
+  {
+    try {
+      let settingsHttp = await firstValueFrom(this._http.get<SettingsHttp>('/api/pomodoro/settings'));
+      let settings = this.castToSettings(settingsHttp);
+      return settings;
+    } catch (err) {
+      this._toastService.addToast('First settings created', 'note');
+    }
+
+    let settings = this.getLocalStorageSettings();
+    let settingsHttp = this.castToHttpSettings(settings);
+    try {
+      await firstValueFrom(this._http.put('/api/pomodoro/settings', settingsHttp));
+    } catch (err) {
+      this._toastService.addToast('Error creating settings, please refresh the page', 'error');
+    }
+
+    return settings;
+  }
+
+  private async loadLocalStorageSettings(): Promise<Settings>
+  {
+    let settings = this.getLocalStorageSettings();
+    return settings;
+  }
+
+  private async updateLocalStorageSettings(settings: Settings): Promise<Settings>
+  {
+    return settings;
+  }
+  
+  private async updateUserSettings(settings: Settings): Promise<Settings>
+  {
+    let settingsHttp = this.castToHttpSettings(settings);
+    try {
+      await firstValueFrom(this._http.post('/api/pomodoro/settings', settingsHttp));
+    } catch (err) {
+      this._toastService.addToast('Error on saving the settings, please try again!', 'error');
+    }
+
+    return settings;
+  }
+
+  private getLocalStorageSettings(): Settings
   {
     let data = this._localStorageService.getJsonParsed(this._settingsKey);
     if (data !== null && 'type' in data && data.type === this._settingsKey) {
@@ -28,6 +114,47 @@ export class StorageService {
 
     return this.createNewSetting();
   }
+
+  private setLocalStorageSettings(settings: Settings): void
+  {
+    this._localStorageService.parseAndSet(
+      this._settingsKey, 
+      settings
+    );
+  }
+
+  private createNewSetting(): Settings
+  {
+    let setting: Settings = {
+      workTime: 25,
+      shortBreakTime: 5,
+      longBreakTime: 15,
+      cyclesBeforeLongBreak: 4,
+      maxConfirmationTime: 1,
+      type: this._settingsKey,
+    };
+    this.setLocalStorageSettings(setting);
+    return setting;
+  }
+
+  private castToHttpSettings(settings: Settings): SettingsHttp
+  {
+    let {type, ...settingsHttp} = settings;
+    return settingsHttp;
+  }
+
+  private castToSettings(settingsHttp: SettingsHttp): Settings
+  {
+    return {type: this._settingsKey, ...settingsHttp};
+  }
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class StorageService {
+  private _localStorageService = inject(LocalStorageService);
+  private readonly _cycleKey = 'pomodoro.cycle';
 
   public setCycle(cycle: Cycle): void
   {
@@ -52,20 +179,6 @@ export class StorageService {
     }
 
     return this.createNewCycle();
-  }
-
-  private createNewSetting(): Settings
-  {
-    let setting: Settings = {
-      workTime: 25,
-      shortBreakTime: 5,
-      longBreakTime: 15,
-      cyclesBeforeLongBreak: 4,
-      maxConfirmationTime: 1,
-      type: this._settingsKey,
-    };
-    this.setSettings(setting);
-    return setting;
   }
 
   private createNewCycle(): Cycle
@@ -120,7 +233,6 @@ export class HandleCounterService {
   providedIn: 'root'
 })
 export class CounterService {
-  private _settings: Settings;
   private _cycle: WritableSignal<Cycle>;
   public cycle: Signal<Cycle>;
   private _waitingConfirmation: WritableSignal<boolean>;
@@ -135,21 +247,27 @@ export class CounterService {
 
   constructor(
     private _storageService: StorageService,
+    private _settingService: SettingsService,
   ) {
-    this._settings = this._storageService.getSettings();
     this._cycle = signal(this._storageService.getCycle());
     this.cycle = this._cycle.asReadonly();
     this._waitingConfirmation = signal(false);
     this.waitingConfirmation = this._waitingConfirmation.asReadonly();
 
     this._stop = new Subject<void>();
-    this._remainingSeconds = new BehaviorSubject<number>(this._getSeconds());
+    this._remainingSeconds = new BehaviorSubject<number>(0);
     this.remainingSeconds = this._remainingSeconds.asObservable();
     this._finish = new Subject<void>();
     this.finish = this._finish.asObservable();
+
+    this._settingService.settings
+      .subscribe(
+        settings => this._remainingSeconds.next(this._getSeconds(settings))
+      )
+    ;
   }
 
-  pomodoroStart() : void 
+  async pomodoroStart() : Promise<void> 
   {
     if (this._cycle().currentCycle === 'idle') {
       this._cycle.set({
@@ -158,28 +276,32 @@ export class CounterService {
       });
       this._storageService.setCycle(this._cycle());
     }
-    this._start(this._getSeconds());
+
+    let setting = await this._settingService.getSettings();
+    this._start(this._getSeconds(setting));
   }
 
-  pomodoroContinue() : void
+  async pomodoroContinue() : Promise<void>
   {
     this._start(this._remainingSeconds.value);
   }
 
-  pomodoroIncrement(count: number) : void
+  async pomodoroIncrement(count: number) : Promise<void>
   {
     this._start(this._remainingSeconds.value + count * 60);
   }
 
-  pomodoroRewind() : void
+  async pomodoroRewind() : Promise<void>
   {
     this.pomodoroStop();
-    this._remainingSeconds.next(this._getSeconds());
+    let setting = await this._settingService.getSettings();
+    this._remainingSeconds.next(this._getSeconds(setting));
   }
 
-  pomodoroReset() : void
+  async pomodoroReset() : Promise<void>
   {
     this.pomodoroStop();
+    let setting = await this._settingService.getSettings();
     this._cycle.set({
       currentCycle: 'idle',
       currentNumberOfCycle: 1,
@@ -187,13 +309,14 @@ export class CounterService {
       type: 'pomodoro.cycle',
     });
     this._storageService.setCycle(this._cycle());
-    this._remainingSeconds.next(this._getSeconds());
+    this._remainingSeconds.next(this._getSeconds(setting));
     this._waitingConfirmation.set(false);
   }
 
-  waitingConfirmationStart() : void
+  async waitingConfirmationStart() : Promise<void>
   {
-    this._start(this._settings.maxConfirmationTime * 60);
+    let settings = await this._settingService.getSettings();
+    this._start(settings.maxConfirmationTime * 60);
   }
 
   pomodoroStop(): void
@@ -201,15 +324,17 @@ export class CounterService {
     this._stop.next();
   }
 
-  pomodoroNext() : void
+  async pomodoroNext() : Promise<void>
   {
     this.pomodoroStop();
+    let settings = await this._settingService.getSettings();
+
     if (this._cycle().currentCycle !== 'work') {
       this._cycle.set({
         ...this._cycle(),
         currentCycle: 'work',
       })
-    } else if (this._cycle().currentNumberOfCycle % this._settings.cyclesBeforeLongBreak === 0) {
+    } else if (this._cycle().currentNumberOfCycle % settings.cyclesBeforeLongBreak === 0) {
       this._cycle.set({
         ...this._cycle(),
         currentCycle: 'long-break',
@@ -222,25 +347,26 @@ export class CounterService {
         currentNumberOfCycle: this._cycle().currentNumberOfCycle + 1,
       });
     }
+
     this._waitingConfirmation.set(false);
     this._storageService.setCycle(this._cycle());
-    this._remainingSeconds.next(this._getSeconds());
+    this._remainingSeconds.next(this._getSeconds(settings));
   }
 
-  private _getSeconds(): number
+  private _getSeconds(settings: Settings): number
   {
     let time: number;
 
     switch (this._cycle().currentCycle) {
       case 'idle':
       case 'work':
-        time = this._settings.workTime;
+        time = settings.workTime;
         break;
       case 'short-break':
-        time = this._settings.shortBreakTime;
+        time = settings.shortBreakTime;
         break;
       case 'long-break':
-        time = this._settings.longBreakTime;
+        time = settings.longBreakTime;
         break;
     }
 
@@ -269,11 +395,12 @@ export class CounterService {
     ;
   }
 
-  private _confirmationWaiting() : void
+  private async _confirmationWaiting() : Promise<void>
   {
     this.pomodoroStop();
+    let settings = await this._settingService.getSettings();
 
-    this._remainingSeconds.next(this._settings.maxConfirmationTime * 60);
+    this._remainingSeconds.next(settings.maxConfirmationTime * 60);
     this._waitingConfirmation.set(true);
     
     interval(1000)

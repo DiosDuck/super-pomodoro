@@ -44,6 +44,7 @@ export class SettingsService {
   {
     this._userService.user
       .pipe(
+        take(1),
         switchMap(
           user => user === null ? this.updateLocalStorageSettings(settings) : this.updateUserSettings(settings) 
         )

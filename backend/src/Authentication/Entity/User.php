@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Authentication\Entity;
 
 use App\Authentication\Repository\UserRepository;
@@ -36,6 +38,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(name: 'display_name', length: 36)]
     private ?string $displayName = null;
+
+    #[ORM\Column]
+    private ?bool $isActive = null;
 
     public function getId(): ?int
     {
@@ -138,6 +143,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setDisplayName(string $displayName): static
     {
         $this->displayName = $displayName;
+
+        return $this;
+    }
+
+    public function isActive(): ?bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(bool $isActive): static
+    {
+        $this->isActive = $isActive;
 
         return $this;
     }

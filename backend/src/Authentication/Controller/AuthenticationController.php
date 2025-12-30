@@ -15,10 +15,11 @@ use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use OpenApi\Attributes as OA;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mailer\MailerInterface;
 
 #[Route(path: '/api/auth', name: 'api_auth_')]
 class AuthenticationController extends AbstractController {
-    
     #[Route(path: '/register', name: 'register', methods: ['PUT'])]
     #[OA\Put(
         path: '/api/auth/register',
@@ -42,6 +43,7 @@ class AuthenticationController extends AbstractController {
         #[MapRequestPayload] RegisterUserDTO $registerUser,
         UserRepository $userRepository,
         UserPasswordHasherInterface $passwordHasher,
+        MailerInterface $mailer,
         EntityManagerInterface $entityManager
     ): JsonResponse {
         if ($userRepository->findOneBy(['username' => $registerUser->username])) {
@@ -58,25 +60,19 @@ class AuthenticationController extends AbstractController {
         $hashedPassword = $passwordHasher->hashPassword($user, $registerUser->password);
         $user->setPassword($hashedPassword);
 
-        $entityManager->persist($user);
-        $entityManager->flush();
+        $email = new TemplatedEmail();
+        $email->to($user->getEmail())
+            ->subject('Test Register Email')
+            ->htmlTemplate('@authentication/email/register.html.twig')
+            ->context([
+                'displayName' => $user->getDisplayName(),
+            ])
+        ;
 
-        return $this->json(['message' => 'ok']);
-    }
+        $mailer->send($email);
 
-    public function devRegister(UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): JsonResponse
-    {
-        $user = new User();
-        
-        $user->setDisplayName('Test User');
-        $user->setEmail('test@email.com');
-        $user->setUsername('username');
-
-        $hashedPassword = $passwordHasher->hashPassword($user, 'password');
-        $user->setPassword($hashedPassword);
-
-        $entityManager->persist($user);
-        $entityManager->flush();
+        //$entityManager->persist($user);
+        //$entityManager->flush();
 
         return $this->json(['message' => 'ok']);
     }

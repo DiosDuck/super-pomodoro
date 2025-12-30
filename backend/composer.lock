@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4d4e14b2c8499a0e3d0c7472955cee81",
+    "content-hash": "8d1c0393ec211b1d1c161e4890931ccc",
     "packages": [
         {
             "name": "doctrine/collections",
@@ -6405,80 +6405,6 @@
                 }
             ],
             "time": "2025-11-16T10:14:42+00:00"
-        },
-        {
-            "name": "twig/extra-bundle",
-            "version": "v3.22.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/twigphp/twig-extra-bundle.git",
-                "reference": "b6534bc925bec930004facca92fccebd0c809247"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/twig-extra-bundle/zipball/b6534bc925bec930004facca92fccebd0c809247",
-                "reference": "b6534bc925bec930004facca92fccebd0c809247",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=8.1.0",
-                "symfony/framework-bundle": "^5.4|^6.4|^7.0|^8.0",
-                "symfony/twig-bundle": "^5.4|^6.4|^7.0|^8.0",
-                "twig/twig": "^3.2|^4.0"
-            },
-            "require-dev": {
-                "league/commonmark": "^2.7",
-                "symfony/phpunit-bridge": "^6.4|^7.0",
-                "twig/cache-extra": "^3.0",
-                "twig/cssinliner-extra": "^3.0",
-                "twig/html-extra": "^3.0",
-                "twig/inky-extra": "^3.0",
-                "twig/intl-extra": "^3.0",
-                "twig/markdown-extra": "^3.0",
-                "twig/string-extra": "^3.0"
-            },
-            "type": "symfony-bundle",
-            "autoload": {
-                "psr-4": {
-                    "Twig\\Extra\\TwigExtraBundle\\": ""
-                },
-                "exclude-from-classmap": [
-                    "/Tests/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
-                }
-            ],
-            "description": "A Symfony bundle for extra Twig extensions",
-            "homepage": "https://twig.symfony.com",
-            "keywords": [
-                "bundle",
-                "extra",
-                "twig"
-            ],
-            "support": {
-                "source": "https://github.com/twigphp/twig-extra-bundle/tree/v3.22.1"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/twig/twig",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2025-11-02T11:00:49+00:00"
         },
         {
             "name": "twig/twig",

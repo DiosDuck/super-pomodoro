@@ -29,7 +29,6 @@
         "symfony/serializer": "7.4.*",
         "symfony/twig-bundle": "7.4.*",
         "symfony/yaml": "7.4.*",
-        "twig/extra-bundle": "^2.12|^3.22.1",
         "twig/twig": "^2.12|^3.22"
     },
     "config": {

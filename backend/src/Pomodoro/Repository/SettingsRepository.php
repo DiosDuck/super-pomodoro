@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Pomodoro\Repository;
 
 use App\Authentication\Entity\User;

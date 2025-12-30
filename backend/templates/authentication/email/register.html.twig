@@ -1,0 +1,22 @@
+{% extends "@authentication/email/base.html.twig" %}
+{% block in_box %}
+    <h1 style="font-size=32px;">Welcome {{ displayName }}!</h1>
+    <p>You're receiving this message because you recently signed up for a account.</p>
+    <p>Confirm your email address by clicking the button below. This step adds extra security to your business by verifying you own this email.</p>
+{% endblock %}
+{% block outside_box %}
+    <table width="100%" border="0" cellspacing="14px" cellpadding="0">
+        <tr>
+            <td>Thank you,</td>
+        </tr>
+        <tr>
+            <td>Roda</td>
+        </tr>
+        <tr>
+            <td><hr></td>
+        </tr>
+        <tr>
+            <td align="center">You have 1 hour to confirm the registration</td>
+        </tr>
+    </table>
+{% endblock %}

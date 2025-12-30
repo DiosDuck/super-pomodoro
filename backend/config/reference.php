@@ -770,53 +770,6 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *         html_to_text_converter?: scalar|null, // A service implementing the "Symfony\Component\Mime\HtmlToTextConverter\HtmlToTextConverterInterface". // Default: null
  *     },
  * }
- * @psalm-type TwigExtraConfig = array{
- *     cache?: bool|array{
- *         enabled?: bool, // Default: false
- *     },
- *     html?: bool|array{
- *         enabled?: bool, // Default: false
- *     },
- *     markdown?: bool|array{
- *         enabled?: bool, // Default: false
- *     },
- *     intl?: bool|array{
- *         enabled?: bool, // Default: false
- *     },
- *     cssinliner?: bool|array{
- *         enabled?: bool, // Default: false
- *     },
- *     inky?: bool|array{
- *         enabled?: bool, // Default: false
- *     },
- *     string?: bool|array{
- *         enabled?: bool, // Default: false
- *     },
- *     commonmark?: array{
- *         renderer?: array{ // Array of options for rendering HTML.
- *             block_separator?: scalar|null,
- *             inner_separator?: scalar|null,
- *             soft_break?: scalar|null,
- *         },
- *         html_input?: "strip"|"allow"|"escape", // How to handle HTML input.
- *         allow_unsafe_links?: bool, // Remove risky link and image URLs by setting this to false. // Default: true
- *         max_nesting_level?: int, // The maximum nesting level for blocks. // Default: 9223372036854775807
- *         max_delimiters_per_line?: int, // The maximum number of strong/emphasis delimiters per line. // Default: 9223372036854775807
- *         slug_normalizer?: array{ // Array of options for configuring how URL-safe slugs are created.
- *             instance?: mixed,
- *             max_length?: int, // Default: 255
- *             unique?: mixed,
- *         },
- *         commonmark?: array{ // Array of options for configuring the CommonMark core extension.
- *             enable_em?: bool, // Default: true
- *             enable_strong?: bool, // Default: true
- *             use_asterisk?: bool, // Default: true
- *             use_underscore?: bool, // Default: true
- *             unordered_list_markers?: list<scalar|null>,
- *         },
- *         ...<mixed>
- *     },
- * }
  * @psalm-type DoctrineConfig = array{
  *     dbal?: array{
  *         default_connection?: scalar|null,
@@ -1485,7 +1438,6 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *     framework?: FrameworkConfig,
  *     nelmio_api_doc?: NelmioApiDocConfig,
  *     twig?: TwigConfig,
- *     twig_extra?: TwigExtraConfig,
  *     doctrine?: DoctrineConfig,
  *     doctrine_migrations?: DoctrineMigrationsConfig,
  *     security?: SecurityConfig,
@@ -1497,7 +1449,6 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *         framework?: FrameworkConfig,
  *         nelmio_api_doc?: NelmioApiDocConfig,
  *         twig?: TwigConfig,
- *         twig_extra?: TwigExtraConfig,
  *         doctrine?: DoctrineConfig,
  *         doctrine_migrations?: DoctrineMigrationsConfig,
  *         security?: SecurityConfig,
@@ -1511,7 +1462,6 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *         framework?: FrameworkConfig,
  *         nelmio_api_doc?: NelmioApiDocConfig,
  *         twig?: TwigConfig,
- *         twig_extra?: TwigExtraConfig,
  *         doctrine?: DoctrineConfig,
  *         doctrine_migrations?: DoctrineMigrationsConfig,
  *         security?: SecurityConfig,
@@ -1524,7 +1474,6 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *         framework?: FrameworkConfig,
  *         nelmio_api_doc?: NelmioApiDocConfig,
  *         twig?: TwigConfig,
- *         twig_extra?: TwigExtraConfig,
  *         doctrine?: DoctrineConfig,
  *         doctrine_migrations?: DoctrineMigrationsConfig,
  *         security?: SecurityConfig,

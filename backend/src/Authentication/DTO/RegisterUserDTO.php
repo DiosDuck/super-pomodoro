@@ -17,4 +17,12 @@ class RegisterUserDTO {
     public string $email;
     #[OA\Property(example: 'John Smith')]
     public string $displayName;
+
+    public function isValid(): bool
+    {
+        return strlen($this->username) >=6 && strlen($this->username) <= 20
+            && strlen($this->password) >= 6 && strlen($this->password) <= 20
+            && filter_var($this->email, FILTER_VALIDATE_EMAIL)
+        ;
+    }
 }

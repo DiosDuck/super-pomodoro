@@ -7,19 +7,23 @@ namespace App\Authentication\Controller;
 use App\Authentication\DTO\RegisterUserDTO;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use App\Authentication\Entity\User;
-use App\Authentication\Repository\UserRepository;
+use App\Authentication\Exception\InvalidRegisterDataException;
+use App\Authentication\Service\AuthenticationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Nelmio\ApiDocBundle\Attribute\Model;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use OpenApi\Attributes as OA;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Mailer\MailerInterface;
 
 #[Route(path: '/api/auth', name: 'api_auth_')]
 class AuthenticationController extends AbstractController {
+    public function __construct(
+        private readonly AuthenticationService $authenticationService,
+    ) { }
+
     #[Route(path: '/register', name: 'register', methods: ['PUT'])]
     #[OA\Put(
         path: '/api/auth/register',
@@ -41,24 +45,31 @@ class AuthenticationController extends AbstractController {
     )]
     public function register(
         #[MapRequestPayload] RegisterUserDTO $registerUser,
-        UserRepository $userRepository,
-        UserPasswordHasherInterface $passwordHasher,
         MailerInterface $mailer,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        Request $request,
     ): JsonResponse {
-        if ($userRepository->findOneBy(['username' => $registerUser->username])) {
-            return $this->json(['message' => 'Invalid user data'], JsonResponse::HTTP_BAD_REQUEST);
+        try {
+            $user = $this->authenticationService->getUserFromRegisterData($registerUser);
+        } catch (InvalidRegisterDataException) {
+            return $this->json(
+                ['message' => 'Invalid user data'],
+                JsonResponse::HTTP_BAD_REQUEST
+            );
         }
 
-        $user = new User();
-        
-        $user->setDisplayName($registerUser->displayName);
-        $user->setEmail($registerUser->email);
-        $user->setUsername($registerUser->username);
-        $user->setRoles(['ROLE_USER']);
+        $createdToken = $this->authenticationService->createRegisterTokenForUser($user);
 
-        $hashedPassword = $passwordHasher->hashPassword($user, $registerUser->password);
-        $user->setPassword($hashedPassword);
+        $entityManager->persist($user);
+        //$entityManager->persist($createdToken->tokenVerification);
+        $entityManager->flush();
+
+        $queryParam = http_build_query(
+            [
+                'token' => $createdToken->unhashedToken, 
+                'id' => $user->getId(),
+            ]
+        );
 
         $email = new TemplatedEmail();
         $email->to($user->getEmail())
@@ -66,13 +77,15 @@ class AuthenticationController extends AbstractController {
             ->htmlTemplate('@authentication/email/register.html.twig')
             ->context([
                 'displayName' => $user->getDisplayName(),
+                'url' => sprintf(
+                    '%s/verify-email?%s',
+                    $request->getSchemeAndHttpHost(),
+                    $queryParam,
+                ),
             ])
         ;
 
         $mailer->send($email);
-
-        //$entityManager->persist($user);
-        //$entityManager->flush();
 
         return $this->json(['message' => 'ok']);
     }

@@ -5,11 +5,13 @@ export const routes: Routes = [
     {
         path: 'status',
         canMatch: [adminGuard],
+        title: 'Status page',
         loadComponent: () => import('./status/index/index').then(m => m.Index),
     },
     {
         path: '',
         pathMatch: 'full',
+        title: 'Home',
         loadComponent: () => import('./home/home').then(m => m.Home),
     },
     {
@@ -18,6 +20,7 @@ export const routes: Routes = [
     },
     {
         path: 'verify-email',
+        title: 'Email Verification',
         canActivate: [verifyEmailGuard],
     },
     {
@@ -26,6 +29,7 @@ export const routes: Routes = [
     },
     {
         path: 'not-found',
+        title: 'Womp Womp',
         loadComponent: () => import('./not-found/not-found').then(m => m.NotFound),
     },
     {

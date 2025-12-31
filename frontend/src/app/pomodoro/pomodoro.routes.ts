@@ -8,6 +8,7 @@ export const POMODORO_ROUTES : Routes = [
     },
     {
         path: 'settings',
+        title: 'Pomodoro Settings',
         loadComponent: () => import('./components/settings/settings').then(m => m.Settings),
     },
     {

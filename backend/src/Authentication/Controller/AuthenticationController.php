@@ -17,9 +17,10 @@ use Nelmio\ApiDocBundle\Attribute\Model;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use OpenApi\Attributes as OA;
-use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
 
 #[Route(path: '/api/auth', name: 'api_auth_')]
 class AuthenticationController extends AbstractController {
@@ -48,9 +49,15 @@ class AuthenticationController extends AbstractController {
         response: 400,
         description: 'Invalid user data',
     )]
+    #[OA\Response(
+        response: 429,
+        description: 'Too many requests for respective IP',
+    )]
     public function register(
         #[MapRequestPayload] RegisterUserDTO $registerUser,
+        RateLimiterFactoryInterface $registerAccountLimiter,
         MailerInterface $mailer,
+        Request $request,
     ): JsonResponse {
         try {
             $user = $this->authenticationService->getUserFromRegisterData($registerUser);
@@ -58,6 +65,14 @@ class AuthenticationController extends AbstractController {
             return $this->json(
                 ['message' => 'Invalid user data'],
                 JsonResponse::HTTP_BAD_REQUEST
+            );
+        }
+
+        $limiter = $registerAccountLimiter->create($request->getClientIp());
+        if (false === $limiter->consume(1)->isAccepted()) {
+            return $this->json(
+                ['message' => 'Too many requests'],
+                JsonResponse::HTTP_TOO_MANY_REQUESTS,
             );
         }
 

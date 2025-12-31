@@ -5,6 +5,8 @@ import { passwordMatchValidator } from '../register.validator';
 import { AuthService } from '../auth.service';
 import { ToastService } from '../../shared/services/toast';
 import { LastRouteService } from '../../shared/services/last-route';
+import { catchError, take, throwError } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-register',
@@ -34,21 +36,36 @@ export class Register {
 
   async onSubmit() {
     this.isWaiting = true;
-    try {
-      await this.authService.register({
+    this.errorRegister = false;
+
+    this.authService.register(
+      {
         username: this.registerForm.value.username!,
         password: this.registerForm.value.password!,
         displayName: this.registerForm.value.name!,
         email: this.registerForm.value.email!,
-      });
+      })
+      .pipe(
+        take(1),
+        catchError((error: HttpErrorResponse) => {
+          if (error.status === 429) {
+            this.toastService.addToast("Too many register attempts in short time, please wait", "error");
+          } else {
+            this.errorRegister = true;
+            this.registerForm.markAllAsTouched();
+            this.toastService.addToast("Username is already taken", "error");
+          }
 
-      this.toastService.addToast("Check the inbox to activate the account", "note");
-      this.router.navigateByUrl('/auth/sign-in');
-    } catch (err) {
-      this.errorRegister = true;
-      this.toastService.addToast("Username is already taken", "error");
-      this.isWaiting = false;
-    }
+          return throwError(() => error);
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.toastService.addToast("Check the inbox to activate the account", "note");
+          this.router.navigateByUrl('/auth/sign-in');
+        },
+        error: (err) => this.isWaiting = false,
+      });
   }
 
   async onBack() {

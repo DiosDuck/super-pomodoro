@@ -73,7 +73,7 @@ export class Index implements OnInit {
         this.timerStarted.set(false);
         this.sessionStarted.set(false);
       } else {
-        this.alarmClockAudio = new Audio('assets/audio/alarm-clock.mp3');
+        this.alarmClockAudio.load(); 
         this.alarmClockAudio.play();
       }
     })

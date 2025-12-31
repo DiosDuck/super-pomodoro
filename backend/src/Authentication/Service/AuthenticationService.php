@@ -10,6 +10,7 @@ use App\Authentication\Entity\TokenVerification;
 use App\Authentication\Entity\User;
 use App\Authentication\Enum\TokenTypeEnum;
 use App\Authentication\Exception\InvalidRegisterDataException;
+use App\Authentication\Exception\InvalidTokenException;
 use App\Authentication\Repository\TokenVerificationRepository;
 use App\Authentication\Repository\UserRepository;
 use DateTimeImmutable;
@@ -19,11 +20,11 @@ use Symfony\Component\PasswordHasher\PasswordHasherInterface;
 
 class AuthenticationService {
     public function __construct(
-        private UserRepository $userRepository,
-        private UserPasswordHasherInterface $passwordHasher,
-        private TokenVerificationRepository $tokenVerificationRepository,
+        private readonly UserRepository $userRepository,
+        private readonly UserPasswordHasherInterface $passwordHasher,
+        private readonly TokenVerificationRepository $tokenVerificationRepository,
         #[Target('token_hasher')]
-        private PasswordHasherInterface $tokenHasher,
+        private readonly PasswordHasherInterface $tokenHasher,
     ) { }
 
     public function getUserFromRegisterData(RegisterUserDTO $registerUser): User
@@ -41,7 +42,7 @@ class AuthenticationService {
             ->setEmail($registerUser->email)
             ->setUsername($registerUser->username)
             ->setRoles(['ROLE_USER'])
-            ->setIsActive(true);
+            ->setIsActive(false);
         ;
 
         $hashedPassword = $this->passwordHasher->hashPassword($user, $registerUser->password);
@@ -67,5 +68,23 @@ class AuthenticationService {
             tokenVerification: $tokenVerification,
             unhashedToken: $token,
         );
+    }
+
+    public function getValidTokenForUser(int $userId, TokenTypeEnum $type, string $token): TokenVerification
+    {
+        $user = $this->userRepository->find($userId);
+        if (!$user) {
+            throw new InvalidTokenException('user not found');
+        }
+
+        $tokenVerification = $this->tokenVerificationRepository->findValidTokenByUserAndType($user, $type);
+        if (
+            !$tokenVerification
+            || !$this->tokenHasher->verify($tokenVerification->getToken(), $token)
+         ) {
+            throw new InvalidTokenException('token invalid');
+        }
+
+        return $tokenVerification;
     }
 }

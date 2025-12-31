@@ -42,7 +42,7 @@ export class Register {
         email: this.registerForm.value.email!,
       });
 
-      this.toastService.addToast("Successfully registered, please sign in", "success");
+      this.toastService.addToast("Check the inbox to activate the account", "note");
       this.router.navigateByUrl('/auth/sign-in');
     } catch (err) {
       this.errorRegister = true;

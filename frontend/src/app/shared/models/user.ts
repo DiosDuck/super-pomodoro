@@ -14,5 +14,10 @@ export interface TokenResponse {
     token: string,
 }
 
+export interface TokenVerification {
+    token: string,
+    id: number,
+}
+
 export type role = 'ROLE_USER' | 'ROLE_ADMIN';
 export type nullableUser = User | null;

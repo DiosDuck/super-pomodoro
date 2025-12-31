@@ -23,13 +23,13 @@ class TokenVerification
     #[ORM\Column(length: 255)]
     private ?string $token = null;
 
-    #[ORM\Column]
+    #[ORM\Column(name: 'expires_at')]
     private ?\DateTimeImmutable $expiresAt = null;
 
     #[ORM\Column(enumType: TokenTypeEnum::class, length: 50)]
     private ?TokenTypeEnum $type;
 
-    #[ORM\Column]
+    #[ORM\Column(name: 'is_used')]
     private ?bool $isUsed = null;
 
     public function getId(): ?int

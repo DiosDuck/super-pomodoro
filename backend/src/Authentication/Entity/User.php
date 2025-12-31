@@ -39,7 +39,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(name: 'display_name', length: 36)]
     private ?string $displayName = null;
 
-    #[ORM\Column]
+    #[ORM\Column(name: 'is_active')]
     private ?bool $isActive = null;
 
     public function getId(): ?int

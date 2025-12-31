@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { adminGuard } from './shared/guards/user-state';
+import { adminGuard, verifyEmailGuard } from './shared/guards/user-state';
 
 export const routes: Routes = [
     {
@@ -15,6 +15,10 @@ export const routes: Routes = [
     {
         path: 'pomodoro',
         loadChildren: () => import('./pomodoro/pomodoro.routes').then(m => m.POMODORO_ROUTES),
+    },
+    {
+        path: 'verify-email',
+        canActivate: [verifyEmailGuard],
     },
     {
         path: 'auth',

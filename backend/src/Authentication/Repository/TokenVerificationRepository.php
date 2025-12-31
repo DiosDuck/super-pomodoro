@@ -34,7 +34,7 @@ class TokenVerificationRepository extends ServiceEntityRepository
         ;
     }
 
-    public function getValidTokenByUserAndType(User $user, TokenTypeEnum $type): ?TokenVerification
+    public function findValidTokenByUserAndType(User $user, TokenTypeEnum $type): ?TokenVerification
     {
         return $this->createQueryBuilder('t')
             ->andWhere('t.expiresAt > :expiresAt')
@@ -43,7 +43,7 @@ class TokenVerificationRepository extends ServiceEntityRepository
             ->setParameter('user', $user)
             ->andWhere('t.type = :type')
             ->setParameter('type', $type)
-            ->andWhere('t.isUsed = :isUser')
+            ->andWhere('t.isUsed = :isUsed')
             ->setParameter('isUsed', false)
             ->getQuery()
             ->getOneOrNullResult()

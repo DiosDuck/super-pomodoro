@@ -41,12 +41,24 @@
                     <use xlink:href="assets/icons/sprite.svg#icon-pause"></use>
                 </svg>
             </button>
-            <button class="pomodoro-button" (click)="onIncrement(5)" [disabled]="cycle().currentCycle !== 'work'">
-                <span class="pomodoro-button__text">+5</span>
-            </button>
-            <button class="pomodoro-button" (click)="onIncrement(15)" [disabled]="cycle().currentCycle !== 'work'">
-                <span class="pomodoro-button__text">+15</span>
-            </button>
+            @if (cycle().currentCycle === 'work') {
+                <button class="pomodoro-button" (click)="onIncrement(5)">
+                    <span class="pomodoro-button__text">+5</span>
+                </button>
+                <button class="pomodoro-button" (click)="onIncrement(15)">
+                    <span class="pomodoro-button__text">+15</span>
+                </button>
+            }
+            @else {
+                <button class="pomodoro-button" (click)="onNext()">
+                    <svg class="pomodoro-button__icon">
+                        <use xlink:href="assets/icons/sprite.svg#icon-next"></use>
+                    </svg>
+                </button>
+                <button class="pomodoro-button" [disabled]="true">
+                    <span class="pomodoro-button__text">+5</span>
+                </button>
+            }
         }
         <button class="pomodoro-button" routerLink="/pomodoro/settings" [disabled]="sessionStarted()">
             <svg class="pomodoro-button__icon">

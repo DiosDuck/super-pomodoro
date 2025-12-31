@@ -14,6 +14,11 @@ $color-note: #4ba9c8;
     padding: 1rem;
 
     border: 0.5rem solid;
+    animation: fadeIn ease 1s;
+
+    &--closing {
+        animation: fadeOut ease 1s;
+    }
 
     &__message {
         font-size: 3rem;
@@ -44,5 +49,25 @@ $color-note: #4ba9c8;
     &--note {
         border-color: color.scale($color-note, $lightness: 20%);
         background-color: $color-note;
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    
+    100% {
+        opacity: 0;
     }
 }

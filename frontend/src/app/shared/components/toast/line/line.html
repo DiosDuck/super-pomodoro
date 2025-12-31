@@ -1,4 +1,4 @@
-<div class="toast-line" [class]="'toast-line--' + toast().status">
+<div class="toast-line" [class]="'toast-line--' + toast().status" [class.toast-line--closing]="isClosed()">
     <span class="toast-line__message">{{toast().message}}</span>
     <svg class="toast-line__icon" (click)="onClose()">
         <use xlink:href="assets/icons/sprite.svg#icon-close"></use>

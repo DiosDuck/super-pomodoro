@@ -8,10 +8,6 @@
     transition-property: max-height;
     transition: 0.2s;
 
-    &-checkbox {
-        display: none;
-    }
-
     &-hamburger {
         z-index: 1000;
 
@@ -29,7 +25,7 @@
         &__icon {
             width: 3rem;
             height: 3rem;
-            padding: 0.5rem;
+            padding: calc(0.5rem - 2px);
             fill: var(--black-color-1);
             transition-property: transform, fill;
             transition-duration: 0.4s, 0.2s;

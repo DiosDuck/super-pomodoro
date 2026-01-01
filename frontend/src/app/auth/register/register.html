@@ -3,23 +3,23 @@
     <form class="register-form" [formGroup]="registerForm" (submit)="onSubmit()">
         <div class="register-form__block">
             <label for="username" class="register-form__block--label">Username</label>
-            <input id="username" type="text" class="register-form__block--input" [class.register-form__block--invalid]="isInvalid('username')" formControlName="username" placeholder="username">
+            <input id="username" type="text" class="register-form__block--input" [class.register-form__block--invalid]="isInvalid('username')" formControlName="username" placeholder="username" autocomplete="off">
         </div>
         <div class="register-form__block">
             <label for="password" class="register-form__block--label">Password</label>
-            <input id="password" type="password" class="register-form__block--input" [class.register-form__block--invalid]="isInvalid('password')" formControlName="password" placeholder="password">
+            <input id="password" type="password" class="register-form__block--input" [class.register-form__block--invalid]="isInvalid('password')" formControlName="password" placeholder="password" autocomplete="off">
         </div>
         <div class="register-form__block">
             <label for="confirmPassword" class="register-form__block--label">Confirm Password</label>
-            <input id="confirmPassword" type="password" class="register-form__block--input" [class.register-form__block--invalid]="isInvalid('confirmPassword')" formControlName="confirmPassword" placeholder="confirmPassword">
+            <input id="confirmPassword" type="password" class="register-form__block--input" [class.register-form__block--invalid]="isInvalid('confirmPassword')" formControlName="confirmPassword" placeholder="confirmPassword" autocomplete="off">
         </div>
         <div class="register-form__block">
             <label for="name" class="register-form__block--label">Name</label>
-            <input id="name" type="text" class="register-form__block--input" [class.register-form__block--invalid]="isInvalid('name')" formControlName="name" placeholder="name">
+            <input id="name" type="text" class="register-form__block--input" [class.register-form__block--invalid]="isInvalid('name')" formControlName="name" placeholder="name" autocomplete="off">
         </div>
         <div class="register-form__block">
             <label for="enail" class="register-form__block--label">Email</label>
-            <input id="email" type="text" class="register-form__block--input" [class.register-form__block--invalid]="isInvalid('email')" formControlName="email" placeholder="email">
+            <input id="email" type="text" class="register-form__block--input" [class.register-form__block--invalid]="isInvalid('email')" formControlName="email" placeholder="email" autocomplete="off">
         </div>
         <div class="register-form__buttons">
             <button type="button" class="register-form__button register-form__button--secondary" (click)="onBack()">Go back</button>

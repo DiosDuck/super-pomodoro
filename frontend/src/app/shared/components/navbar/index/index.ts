@@ -4,6 +4,7 @@ import { Auth } from '../auth/auth';
 import { Bubble } from "../bubble/bubble";
 import { LastRouteService } from '../../../services/last-route';
 import { navId } from '../../navbar.config';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
@@ -13,10 +14,12 @@ import { navId } from '../../navbar.config';
 })
 export class Index {
   lastRouteService = inject(LastRouteService);
-  selectedId = signal<navId>(null);
+  
+  private _selectedId = new BehaviorSubject<navId>(null);
+  selectedId = this._selectedId.asObservable();
 
   onSelect(id: navId) {
-    this.selectedId.set(id);
+    this._selectedId.next(id);
 
     if (id === "nav-auth") {
       this.lastRouteService.updateLastRoute();

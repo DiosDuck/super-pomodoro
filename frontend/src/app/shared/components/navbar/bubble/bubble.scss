@@ -1,16 +1,20 @@
 .nav-bubble {
-    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    gap: 1rem;
+    
+    max-height: calc(4rem + 4px);
+    transition-property: max-height;
+    transition: 0.2s;
 
     &-checkbox {
         display: none;
     }
 
     &-hamburger {
-        position: absolute;
         z-index: 1000;
 
-        top: 0rem;
-        right: 0rem;
         height: 4rem;
         width: 4rem;
 
@@ -23,12 +27,9 @@
         cursor: pointer;
 
         &__icon {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-
             width: 3rem;
             height: 3rem;
+            padding: 0.5rem;
             fill: var(--black-color-1);
             transition-property: transform, fill;
             transition-duration: 0.4s, 0.2s;
@@ -46,14 +47,12 @@
     &-list {
         display: inline-block;
         
-        position: absolute;
         z-index: 1100;
-        top: 5rem;
-        right: 0rem;
 
         width: 30rem;
         // 1.5 rem for margins, 6 rem padding, 4px border
         max-width: calc(100vw - 9rem - 4px);
+        max-height: 0;
 
         border-radius: 1rem;
         border: 2px solid var(--black-color-1);
@@ -62,16 +61,24 @@
         
         transition-duration: 0.2s;
         transform: translateX(calc(100% + 1.5rem));
+
+        &--show {
+            z-index: 1101;
+            transform: translateX(0);
+        }
     }
 
-    &-checkbox:checked~&-hamburger {
+    &--active {
+        max-height: 100vh;
+    }
+
+    &--active > &-hamburger {
         .nav-bubble-hamburger__icon {
             transform: rotate(360deg);
         }
     }
 
-    &-checkbox:checked~&-list {
-        z-index: 1101;
-        transform: translateX(0);
+    &--active > &-list {
+        max-height: 100vh;
     }
 }

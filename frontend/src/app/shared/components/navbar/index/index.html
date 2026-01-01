@@ -2,7 +2,7 @@
   <app-nav-bubble
     [id]="'nav-menu'"
     [icon]="'menu'"
-    [currentId]="selectedId()"
+    [selectedId]="selectedId"
     (onSelect)="onSelect($event)"
   >
     <app-nav-menu
@@ -12,7 +12,7 @@
   <app-nav-bubble
     [id]="'nav-auth'"
     [icon]="'person'"
-    [currentId]="selectedId()"
+    [selectedId]="selectedId"
     (onSelect)="onSelect($event)"
   >
     <app-nav-auth 

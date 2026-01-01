@@ -20,6 +20,7 @@ use OpenApi\Attributes as OA;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\BodyRendererInterface;
 use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
 
 #[Route(path: '/api/auth', name: 'api_auth_')]
@@ -57,6 +58,7 @@ class AuthenticationController extends AbstractController {
         #[MapRequestPayload] RegisterUserDTO $registerUser,
         RateLimiterFactoryInterface $registerAccountLimiter,
         MailerInterface $mailer,
+        BodyRendererInterface $bodyRenderer,
         Request $request,
     ): JsonResponse {
         try {
@@ -104,6 +106,7 @@ class AuthenticationController extends AbstractController {
             ])
         ;
 
+        $bodyRenderer->render($email);
         $mailer->send($email);
 
         return $this->json(['message' => 'ok']);

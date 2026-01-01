@@ -3,14 +3,10 @@ services:
     build:
       context: .
       dockerfile: ./docker/backend/Dockerfile
-      args:
-        ENABLE_XDEBUG: "1"
     container_name: backend
     working_dir: /var/www/backend
     environment:
       APP_ENV: dev
-      XDEBUG_MODE: "develop,debug"
-      XDEBUG_CONFIG: "client_host=host.docker.internal client_port=9003"
     volumes:
       - ./backend:/var/www/backend:delegated
       - ./docker/backend/.env.local:/var/www/backend/.env.local:ro
@@ -56,9 +52,23 @@ services:
       - backend
 
   mail:
-    image: axllent/mailpit:latest
+    image: axllent/mailpit:v1.28.0
     container_name: mailpit
     ports:
       - "1025:1025"
       - "8025:8025"
+    depends_on:
+      - backend
+
+  rabbitmq:
+    image: rabbitmq:4.2.2-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: usermq
+      RABBITMQ_DEFAULT_PASS: passwordmq
+    volumes:
+      - "./locale/rabbitmq:/var/lib/rabbitmq"
       

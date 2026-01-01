@@ -17,7 +17,7 @@ $color-note: #4ba9c8;
     animation: fadeIn ease 1s;
 
     &--closing {
-        animation: fadeOut ease 1s;
+        animation: fadeOut ease 1s forwards;
     }
 
     &__message {

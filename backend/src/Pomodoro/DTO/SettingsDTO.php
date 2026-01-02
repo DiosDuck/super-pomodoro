@@ -6,6 +6,7 @@ namespace App\Pomodoro\DTO;
 
 use App\Pomodoro\Entity\Settings;
 use OpenApi\Attributes as OA;
+use Symfony\Component\Serializer\Attribute\Ignore;
 
 #[OA\Schema(
     title: 'Pomodoro Settings Schema',
@@ -51,6 +52,7 @@ class SettingsDTO {
         return $settings;
     }
 
+    #[Ignore]
     public function isValid(): bool
     {
         return $this->workTime > 0

@@ -3,6 +3,7 @@
 namespace App\Authentication\DTO;
 
 use OpenApi\Attributes as OA;
+use Symfony\Component\Serializer\Attribute\Ignore;
 
 #[OA\Schema(
     title: 'Register User Schema',
@@ -18,6 +19,7 @@ class RegisterUserDTO {
     #[OA\Property(example: 'John Smith')]
     public string $displayName;
 
+    #[Ignore]
     public function isValid(): bool
     {
         return strlen($this->username) >=6 && strlen($this->username) <= 20

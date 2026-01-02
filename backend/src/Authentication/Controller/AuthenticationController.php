@@ -80,14 +80,15 @@ class AuthenticationController extends AbstractController {
 
         $createdToken = $this->authenticationService->createRegisterTokenForUser($user);
 
-        $this->entityManager->persist($user);
-        $this->entityManager->persist($createdToken->tokenVerification);
-        $this->entityManager->flush();
+        // $this->entityManager->persist($user);
+        // $this->entityManager->persist($createdToken->tokenVerification);
+        // $this->entityManager->flush();
 
         $queryParam = http_build_query(
             [
                 'token' => $createdToken->unhashedToken, 
-                'id' => $user->getId(),
+                // 'id' => $user->getId(),
+                'id' => 1
             ]
         );
 

@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, ElementRef, inject, OnInit, signal, viewChild } from '@angular/core';
 import { CounterService } from '../../pomodoro.services';
 import { RouterLink } from "@angular/router";
 import { Title } from '@angular/platform-browser';
@@ -37,7 +37,7 @@ export class Index implements OnInit {
   timerStarted = signal<boolean>(false);
   sessionStarted = signal<boolean>(false);
   isWaitingFormConfirmation = this.counterService.waitingConfirmation;
-  alarmClockAudio = new Audio('assets/audio/alarm-clock.mp3');
+  alarm = viewChild.required<ElementRef<HTMLAudioElement>>('audio');
 
   titleValue = computed(
     () => {
@@ -73,8 +73,8 @@ export class Index implements OnInit {
         this.timerStarted.set(false);
         this.sessionStarted.set(false);
       } else {
-        this.alarmClockAudio.currentTime = 0; 
-        this.alarmClockAudio.play();
+        this.alarm().nativeElement.load();
+        this.alarm().nativeElement.play();
       }
     })
   }
@@ -100,7 +100,7 @@ export class Index implements OnInit {
   {
     this.timerStarted.set(false);
     this.sessionStarted.set(false);
-    this.alarmClockAudio.pause();
+    this.alarm().nativeElement.pause();
     await this.counterService.pomodoroNext();
   }
 

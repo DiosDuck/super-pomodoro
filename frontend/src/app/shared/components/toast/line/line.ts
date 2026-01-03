@@ -1,4 +1,4 @@
-import { Component, input, OnInit, output, signal } from "@angular/core";
+import { Component, computed, input, OnInit, output, signal } from "@angular/core";
 import { Toast } from "../../../models/toast";
 import { BehaviorSubject, delay, interval, Subject, takeUntil, takeWhile, timer } from "rxjs";
 
@@ -15,6 +15,16 @@ export class Line implements OnInit{
     toast = input.required<Toast>();
     timeUp = input<number>(5);
     close = output<number>();
+    icon = computed(() => {
+      switch (this.toast().status) {
+        case 'error':
+          return 'error';
+        case 'note':
+          return 'info';
+        case 'success':
+          return 'check';
+      }
+    });
 
     ngOnInit(): void {
       timer(this.timeUp() * 1000)

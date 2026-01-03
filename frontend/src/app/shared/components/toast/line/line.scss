@@ -1,19 +1,16 @@
 @use "sass:color";
 
-$color-success: #90EF90;
-$color-error: #FC6C85;
-$color-note: #4ba9c8;
-
 .toast-line {
     border-radius: 1rem;
     display: flex;
     flex-direction: row;
     gap: 1rem;
     justify-content: space-between;
-    width: 24rem;
+    width: 27rem;
     padding: 1rem;
 
-    border: 0.5rem solid;
+    border: 0.5rem solid var(--black-color-1);
+    background-color: var(--white-color-1);
     animation: fadeIn ease 1s;
 
     &--closing {
@@ -22,33 +19,23 @@ $color-note: #4ba9c8;
 
     &__message {
         font-size: 3rem;
-        color: var(--white-color-1);
+        // 27 rem - 2*1 rem gap - 2*3rem icons
+        max-width: 19rem;
+        color: var(--black-color-1);
     }
 
     &__icon {
         width: 3rem;
         height: 3rem;
         align-self: flex-start;
-        fill: var(--white-color-1);
+        fill: var(--black-color-1);
 
-        &:hover {
-            fill: var(--gray-color-4);
+        &--close {
+            align-self: flex-start;
+            &:hover {
+                fill: var(--gray-color-2);
+            }
         }
-    }
-
-    &--success {
-        border-color: color.scale($color-success, $lightness: 20%);
-        background-color: $color-success;
-    }
-
-    &--error {
-        border-color: color.scale($color-error, $lightness: 20%);
-        background-color: $color-error;
-    }
-
-    &--note {
-        border-color: color.scale($color-note, $lightness: 20%);
-        background-color: $color-note;
     }
 }
 

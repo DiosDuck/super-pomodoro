@@ -8,13 +8,13 @@
         <div class="auth-menu__subtitle--line">Email: {{user()!.email}}</div>
     </div>
 }
-<ul class="auth-menu__list">
+<div class="auth-menu__list">
     @if (user() === null) {
-        <li class="auth-menu__list--item" [class.auth-menu__list--selected]="'/auth/sign-in' === router.url" routerLink="/auth/sign-in" (click)="toggle()">Login</li>
-        <li class="auth-menu__list--item" [class.auth-menu__list--selected]="'/auth/register' === router.url" routerLink="/auth/register" (click)="toggle()">Register</li>
+        <button class="auth-menu__list--item" [class.auth-menu__list--selected]="'/auth/sign-in' === router.url" routerLink="/auth/sign-in" (click)="toggle()">Login</button>
+        <button class="auth-menu__list--item" [class.auth-menu__list--selected]="'/auth/register' === router.url" routerLink="/auth/register" (click)="toggle()">Register</button>
     }
     @else {
-        <!--<li class="auth-menu__list--item" [class.auth-menu__list--selected]="'/profile' === router.url" routerLink="/profile">Profile</li>-->
-        <li class="auth-menu__list--item" (click)="toggle(); onLogout()">Logout</li>
+        <button class="auth-menu__list--item" [class.auth-menu__list--selected]="'/profile' === router.url" routerLink="/profile">Profile</button>
+        <button class="auth-menu__list--item" (click)="toggle(); onLogout()">Logout</button>
     }
-</ul>
+</div>

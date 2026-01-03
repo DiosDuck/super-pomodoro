@@ -4,23 +4,6 @@ import { Injectable } from "@angular/core";
   providedIn: 'root'
 })
 export class LocalStorageService {
-    private readonly _loginSessionToken = 'TOKEN';
-
-    getUserToken(): string | null
-    {
-        return this.get(this._loginSessionToken);
-    }
-
-    setUserToken(token: string): void
-    {
-        this.set(this._loginSessionToken, token);
-    }
-
-    removeUserToken(): void
-    {
-        this.remove(this._loginSessionToken);
-    }
-
     getJsonParsed(key: string): any
     {
         let rawData = this.get(key);

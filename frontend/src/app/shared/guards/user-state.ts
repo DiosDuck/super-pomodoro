@@ -16,6 +16,16 @@ export const unsignedGuard: CanActivateChildFn = () => {
     );
 }
 
+export const signedGuard: CanActivateChildFn = () => {
+    const userService = inject(UserService);
+
+    return userService.user.pipe(
+        filter(user => undefined !== user),
+        take(1),
+        map(user => user !== null),
+    );
+}
+
 export const adminGuard: CanActivateFn = () => {
     const userService = inject(UserService);
     

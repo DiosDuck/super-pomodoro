@@ -4,7 +4,7 @@
         margin-bottom: 2rem;
         cursor: pointer;
 
-        &:hover {
+        &:hover, &:focus {
             color: var(--gray-color-1);
         }
     }
@@ -12,10 +12,13 @@
     &__list {
         display: flex;
         flex-direction: column;
-        list-style: none;
         padding: 0 2rem;
 
         &--item {
+            font-family: var(--font-family);
+            background-color: transparent;
+            text-align: left;
+            border: 0;
             cursor: pointer;
             font-size: 2rem;
             padding: 1rem 0;

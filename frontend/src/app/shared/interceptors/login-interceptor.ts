@@ -1,14 +1,14 @@
 import { HttpEvent, HttpHandlerFn, HttpHeaders, HttpRequest } from "@angular/common/http";
 import { Observable } from "rxjs";
-import { LocalStorageService } from "../services/local-storage";
 import { inject } from "@angular/core";
+import { UserToken } from "../services/user";
 
 export function userInterceptor(
   req: HttpRequest<unknown>,
   next: HttpHandlerFn,
 ): Observable<HttpEvent<unknown>> {
-    const localStorageService = inject(LocalStorageService);
-    const token = localStorageService.getUserToken();
+    const userToken = inject(UserToken);
+    const token = userToken.get();
     if (token === null) {
         return next(req);
     }

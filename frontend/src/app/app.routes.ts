@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { adminGuard, verifyEmailGuard } from './shared/guards/user-state';
+import { adminGuard, signedGuard, verifyEmailGuard } from './shared/guards/user-state';
 
 export const routes: Routes = [
     {
@@ -26,6 +26,11 @@ export const routes: Routes = [
     {
         path: 'auth',
         loadChildren: () => import('./auth/auth.routes').then(m => m.AUTH_ROUTES),
+    },
+    {
+        path: 'profile',
+        canMatch: [signedGuard],
+        loadChildren: () => import('./profile/profile.routes').then(m => m.PROFILE_ROUTES),
     },
     {
         path: 'not-found',

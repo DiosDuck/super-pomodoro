@@ -1,13 +1,13 @@
 <div class="home">
     <div class="home-title">Welcome, {{ user() ? user()!.displayName : 'user' }}!</div>
-    <ul class="home-list">
+    <div class="home-list">
         @for (navItem of (navItems | loggedIn: user()); track $index) {
-            <li class="home-list__item">
-                <a [routerLink]="navItem.url" class="home-list__item--link">{{ navItem.name }}</a>
-            </li>
+            <button class="home-list__item" [routerLink]="navItem.url">
+                {{ navItem.name }}
+            </button>
         }
-        <li class="home-list__item home-list__item--disabled">
+        <button class="home-list__item home-list__item" [disabled]="true">
             <span>Coming Soon</span>
-        </li>
-    </ul>
+        </button>
+    </div>
 </div>

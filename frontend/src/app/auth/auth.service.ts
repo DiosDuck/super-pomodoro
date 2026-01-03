@@ -13,19 +13,16 @@ export class AuthService {
     constructor(
         private _http: HttpClient,
         private _userService: UserService,
-        private _localStorageService: LocalStorageService
     ) { }
 
     async login(loginData : LoginData): Promise<void> 
     {
         try {
             const res = await firstValueFrom(this._http.post<TokenResponse>('/api/auth/login', loginData));
-            this._localStorageService.setUserToken(res.token);
+            this._userService.loadUser(res.token);
         } catch (err) {
             throw err;
         }
-
-        this._userService.loadUser();
     }
 
     register(registerData : RegisterData): Observable<Object> 

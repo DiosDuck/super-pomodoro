@@ -27,13 +27,13 @@ export class Bubble implements OnInit{
         if (this.id() === id) {
           this.isDisplayed.set(true);
           this.isActivating.set(true);
-          timer(200).subscribe(() => this.isSelected.set(true));
+          timer(100).subscribe(() => this.isSelected.set(true));
         }
         
         if (this.id() === this.pastId) {
           this.isSelected.set(false);
-          timer(200).subscribe(() => this.isActivating.set(false));
-          timer(400).subscribe(() => this.isDisplayed.set(false));
+          timer(100).subscribe(() => this.isActivating.set(false));
+          timer(200).subscribe(() => this.isDisplayed.set(false));
         }
 
         this.pastId = id;

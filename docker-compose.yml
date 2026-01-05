@@ -82,8 +82,8 @@ services:
     image: rabbitmq:4.2.2-management
     container_name: rabbitmq
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "5673:5672"
+      - "15673:15672"
     environment:
       RABBITMQ_DEFAULT_USER: usermq
       RABBITMQ_DEFAULT_PASS: passwordmq

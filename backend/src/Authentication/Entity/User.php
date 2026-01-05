@@ -42,6 +42,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(name: 'is_active')]
     private ?bool $isActive = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $activatedAt = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $lastLoggedIn = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -155,6 +161,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsActive(bool $isActive): static
     {
         $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    public function getActivatedAt(): ?\DateTimeImmutable
+    {
+        return $this->activatedAt;
+    }
+
+    public function setActivatedAt(?\DateTimeImmutable $activatedAt): static
+    {
+        $this->activatedAt = $activatedAt;
+
+        return $this;
+    }
+
+    public function getLastLoggedIn(): ?\DateTimeImmutable
+    {
+        return $this->lastLoggedIn;
+    }
+
+    public function setLastLoggedIn(?\DateTimeImmutable $lastLoggedIn): static
+    {
+        $this->lastLoggedIn = $lastLoggedIn;
 
         return $this;
     }

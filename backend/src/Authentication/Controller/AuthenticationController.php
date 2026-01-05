@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Authentication\Exception\InvalidRegisterDataException;
 use App\Authentication\Exception\InvalidTokenException;
 use App\Authentication\Service\AuthenticationService;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Nelmio\ApiDocBundle\Attribute\Model;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
@@ -146,7 +147,9 @@ class AuthenticationController extends AbstractController {
         }
 
         $user = $verificationToken->getUser();
-        $user->setIsActive(true);
+        $user->setIsActive(true)
+            ->setActivatedAt(new DateTimeImmutable())
+        ;
         $verificationToken->setIsUsed(true);
 
         $this->entityManager->persist($user);

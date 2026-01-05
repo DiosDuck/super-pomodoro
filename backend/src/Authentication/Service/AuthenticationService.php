@@ -42,7 +42,9 @@ class AuthenticationService {
             ->setEmail($registerUser->email)
             ->setUsername($registerUser->username)
             ->setRoles(['ROLE_USER'])
-            ->setIsActive(false);
+            ->setIsActive(false)
+            ->setActivatedAt(null)
+            ->setLastLoggedIn(null)
         ;
 
         $hashedPassword = $this->passwordHasher->hashPassword($user, $registerUser->password);

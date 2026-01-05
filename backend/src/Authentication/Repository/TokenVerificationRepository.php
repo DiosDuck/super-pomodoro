@@ -24,13 +24,30 @@ class TokenVerificationRepository extends ServiceEntityRepository
     /**
      * @return TokenVerification[]
      */
-    public function getAllInvalidTokens(): array
+    public function getAllUnusedExpiredValidationToken(): array
     {
-        return $this->createQueryBuilder('t')
+        return  $this->createQueryBuilder('t')
             ->andWhere('t.expiresAt <= :expiresAt')
             ->setParameter('expiresAt', new DateTimeImmutable())
+            ->andWhere('t.type = :type')
+            ->setParameter('type', TokenTypeEnum::TOKEN_EMAIL_VERIFICATION)
+            ->andWhere('t.isUsed = :isUsed')
+            ->setParameter('isUsed', false)
             ->getQuery()
             ->getResult()
+        ;
+    }
+
+    public function deleteAllExpiredOrUsedTokens(): int
+    {
+        return $this->createQueryBuilder('t')
+            ->delete()
+            ->where('t.expiresAt <= :expiresAt')
+            ->setParameter('expiresAt', new DateTimeImmutable())
+            ->orWhere('t.isUsed = :isUsed')
+            ->setParameter('isUsed', true)
+            ->getQuery()
+            ->execute()
         ;
     }
 

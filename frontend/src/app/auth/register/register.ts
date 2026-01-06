@@ -11,7 +11,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 @Component({
   selector: 'app-register',
   templateUrl: './register.html',
-  styleUrl: './register.scss',
+  styleUrls: ['../shared/form-page.scss', './register.scss'],
   imports: [ReactiveFormsModule],
 })
 export class Register {

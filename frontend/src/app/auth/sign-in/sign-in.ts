@@ -3,12 +3,13 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { AuthService } from '../auth.service';
 import { ToastService } from '../../shared/services/toast';
 import { LastRouteService } from '../../shared/services/last-route';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-sign-in',
   templateUrl: './sign-in.html',
-  styleUrl: './sign-in.scss',
-  imports: [ReactiveFormsModule],
+  styleUrls: ['../shared/form-page.scss', './sign-in.scss'],
+  imports: [ReactiveFormsModule, RouterLink],
 })
 export class SignIn {
   authService = inject(AuthService);

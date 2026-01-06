@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { adminGuard, signedGuard, verifyEmailGuard } from './shared/guards/user-state';
+import { adminGuard, signedGuard } from './shared/guards/user-state';
 
 export const routes: Routes = [
     {
@@ -21,7 +21,7 @@ export const routes: Routes = [
     {
         path: 'verify-email',
         title: 'Email Verification',
-        canActivate: [verifyEmailGuard],
+        loadChildren: () => import('./verify-email/verify-email.routes').then(m => m.VERIFY_EMAIL_ROUTES),
     },
     {
         path: 'auth',

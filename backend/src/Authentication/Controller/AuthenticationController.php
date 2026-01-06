@@ -24,7 +24,7 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\BodyRendererInterface;
 use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
 
-#[Route(path: '/api/auth', name: 'api_auth_')]
+#[Route(path: '/api/auth/register', name: 'api_auth_')]
 class AuthenticationController extends AbstractController {
     public function __construct(
         private readonly AuthenticationService $authenticationService,
@@ -32,7 +32,7 @@ class AuthenticationController extends AbstractController {
         private string $frontendBaseUrl,
     ) { }
 
-    #[Route(path: '/register', name: 'register', methods: ['PUT'])]
+    #[Route(path: '', name: 'register', methods: ['PUT'])]
     #[OA\Put(
         path: '/api/auth/register',
         summary: 'Register user',
@@ -99,7 +99,7 @@ class AuthenticationController extends AbstractController {
             ->context([
                 'displayName' => $user->getDisplayName(),
                 'url' => sprintf(
-                    '%s/verify-email?%s',
+                    '%s/verify-email/register?%s',
                     $this->frontendBaseUrl,
                     $queryParam,
                 ),
@@ -115,7 +115,7 @@ class AuthenticationController extends AbstractController {
 
     #[Route(path: '/verify-email', name: 'verify-email', methods: ['POST'])]
     #[OA\Post(
-        path: '/api/auth/verify-email',
+        path: '/api/auth/register/verify-email',
         summary: 'Verify user',
         tags: ['Authentication'],
     )]

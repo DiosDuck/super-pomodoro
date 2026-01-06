@@ -3,6 +3,7 @@ export interface User {
     username: string,
     email: string,
     roles: role [],
+    activatedAtTimeStamp: number,
 }
 
 export interface LoginData {

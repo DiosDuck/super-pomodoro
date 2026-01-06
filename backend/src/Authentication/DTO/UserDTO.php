@@ -21,6 +21,8 @@ class UserDTO {
         public string $username,
         #[OA\Property(type: 'array', items: new OA\Items(type: 'string', example: 'ROLE_USER'))]
         public array $roles,
+        #[OA\Property(type: 'number', example: '1767687728')]
+        public int $activatedAtTimeStamp,
     ) { }
 
     public static function fromUser(User $user): self
@@ -30,6 +32,7 @@ class UserDTO {
             email: $user->getEmail(),
             username: $user->getUsername(),
             roles: $user->getRoles(),
+            activatedAtTimeStamp: $user->getActivatedAt()->getTimestamp(),
         );
     }
 }

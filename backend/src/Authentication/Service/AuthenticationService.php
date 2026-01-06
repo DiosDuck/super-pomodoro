@@ -11,6 +11,7 @@ use App\Authentication\Entity\User;
 use App\Authentication\Enum\TokenTypeEnum;
 use App\Authentication\Exception\InvalidRegisterDataException;
 use App\Authentication\Exception\InvalidTokenException;
+use App\Authentication\Exception\UserNotFoundException;
 use App\Authentication\Repository\TokenVerificationRepository;
 use App\Authentication\Repository\UserRepository;
 use DateTimeImmutable;
@@ -27,6 +28,9 @@ class AuthenticationService {
         private readonly PasswordHasherInterface $tokenHasher,
     ) { }
 
+    /**
+     * @throws InvalidRegisterDataException
+     */
     public function getUserFromRegisterData(RegisterUserDTO $registerUser): User
     {
         if (
@@ -53,25 +57,30 @@ class AuthenticationService {
         return $user;
     }
 
-    public function createRegisterTokenForUser(User $user): CreatedTokenDTO
+    public function updatePasswordForUser(User $user, string $newPassword): User
     {
-        $token = bin2hex(random_bytes(32));
-        $tokenVerification = new TokenVerification();
+        $hashedPassword = $this->passwordHasher->hashPassword($user, $newPassword);
+        $user->setPassword($hashedPassword);
 
-        $tokenVerification
-            ->setUser($user)
-            ->setExpiresAt(new DateTimeImmutable("+24 hours"))
-            ->setType(TokenTypeEnum::TOKEN_EMAIL_VERIFICATION)
-            ->setIsUsed(false)
-            ->setToken($this->tokenHasher->hash($token))
-        ;
-
-        return new CreatedTokenDTO(
-            tokenVerification: $tokenVerification,
-            unhashedToken: $token,
-        );
+        return $user;
     }
 
+    /**
+     * @throws UserNotFoundException
+     */
+    public function getUserByUsername(string $username): User 
+    {
+        $user = $this->userRepository->findOneBy(['username' => $username]);
+        if (!$user) {
+            throw new UserNotFoundException();
+        }
+
+        return $user;
+    }
+
+    /**
+     * @throws InvalidTokenException
+     */
     public function getValidTokenForUser(int $userId, TokenTypeEnum $type, string $token): TokenVerification
     {
         $user = $this->userRepository->find($userId);
@@ -88,5 +97,24 @@ class AuthenticationService {
         }
 
         return $tokenVerification;
+    }
+
+    public function createToken(TokenTypeEnum $tokenType, User $user): CreatedTokenDTO
+    {
+        $token = bin2hex(random_bytes(32));
+        $tokenVerification = new TokenVerification();
+
+        $tokenVerification
+            ->setUser($user)
+            ->setExpiresAt(new DateTimeImmutable("+24 hours"))
+            ->setType($tokenType)
+            ->setIsUsed(false)
+            ->setToken($this->tokenHasher->hash($token))
+        ;
+
+        return new CreatedTokenDTO(
+            tokenVerification: $tokenVerification,
+            unhashedToken: $token,
+        );
     }
 }

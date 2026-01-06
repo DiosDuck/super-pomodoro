@@ -16,7 +16,7 @@ class TokenVerification
     #[ORM\Column]
     private ?int $id;
 
-    #[ORM\OneToOne(targetEntity: User::class)]
+    #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'userId', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
     private ?User $user = null;
 

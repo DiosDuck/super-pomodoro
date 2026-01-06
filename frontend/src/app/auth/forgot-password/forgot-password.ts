@@ -20,7 +20,7 @@ export class ForgotPassword {
     async onSubmit() {
         this.isWaiting = true;
         this.toastService.addToast("If the username exist, check your inbox!", "success");
-        await this.lastRouteService.redirectToLastRoute();
+        this.isWaiting = false;
     }
 
     async onBack() {

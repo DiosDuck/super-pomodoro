@@ -24,7 +24,7 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\BodyRendererInterface;
 use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
 
-#[Route(path: '/api/auth/register', name: 'api_auth_')]
+#[Route(path: '/api/auth/register', name: 'api_auth_register_')]
 class AuthenticationController extends AbstractController {
     public function __construct(
         private readonly AuthenticationService $authenticationService,
@@ -32,7 +32,7 @@ class AuthenticationController extends AbstractController {
         private string $frontendBaseUrl,
     ) { }
 
-    #[Route(path: '', name: 'register', methods: ['PUT'])]
+    #[Route(path: '', name: 'index', methods: ['PUT'])]
     #[OA\Put(
         path: '/api/auth/register',
         summary: 'Register user',
@@ -79,7 +79,9 @@ class AuthenticationController extends AbstractController {
             );
         }
 
-        $createdToken = $this->authenticationService->createRegisterTokenForUser($user);
+        $createdToken = $this->authenticationService->createToken(
+            TokenTypeEnum::TOKEN_EMAIL_VERIFICATION, $user
+        );
 
         $this->entityManager->persist($user);
         $this->entityManager->persist($createdToken->tokenVerification);
@@ -94,7 +96,7 @@ class AuthenticationController extends AbstractController {
 
         $email = new TemplatedEmail();
         $email->to($user->getEmail())
-            ->subject('Test Register Email')
+            ->subject('Registering Account')
             ->htmlTemplate('@authentication/email/register.html.twig')
             ->context([
                 'displayName' => $user->getDisplayName(),

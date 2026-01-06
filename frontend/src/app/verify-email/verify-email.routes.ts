@@ -7,6 +7,10 @@ export const VERIFY_EMAIL_ROUTES: Routes = [
         canActivate: [verifyEmailRegisterGuard],    
     },
     {
+        path: 'password-reset',
+        canActivate: [verifyEmailRegisterGuard],    
+    },
+    {
         path: '**',
         redirectTo: '/not-found',
     }

@@ -12,6 +12,7 @@
 
         &--label {
             align-self: flex-start;
+            color: var(--gray-color-2);
             &::after {
                 content: ':';
             }

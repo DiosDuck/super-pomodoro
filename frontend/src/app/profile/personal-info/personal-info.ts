@@ -16,7 +16,6 @@ export class PersonalInfo implements OnInit {
         if (this.user() === null) {
             return new Date();
         }
-        console.log(this.user());
         return new Date(this.user()!.activatedAtTimeStamp * 1000);
     })
 

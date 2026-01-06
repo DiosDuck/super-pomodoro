@@ -8,7 +8,7 @@ export const VERIFY_EMAIL_ROUTES: Routes = [
     },
     {
         path: 'password-reset',
-        canActivate: [verifyEmailRegisterGuard],    
+        loadComponent: () => import('./reset-password/reset-password').then(m => m.ResetPassword),  
     },
     {
         path: '**',

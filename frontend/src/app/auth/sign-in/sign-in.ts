@@ -8,7 +8,7 @@ import { RouterLink } from "@angular/router";
 @Component({
   selector: 'app-sign-in',
   templateUrl: './sign-in.html',
-  styleUrls: ['../shared/form-page.scss', './sign-in.scss'],
+  styleUrls: ['../../shared/styles/form-page.scss', './sign-in.scss'],
   imports: [ReactiveFormsModule, RouterLink],
 })
 export class SignIn {

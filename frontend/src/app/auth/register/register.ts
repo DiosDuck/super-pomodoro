@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { passwordMatchValidator } from '../register.validator';
+import { passwordMatchValidator } from '../../shared/validator/password-match';
 import { AuthService } from '../auth.service';
 import { ToastService } from '../../shared/services/toast';
 import { LastRouteService } from '../../shared/services/last-route';
@@ -11,7 +11,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 @Component({
   selector: 'app-register',
   templateUrl: './register.html',
-  styleUrls: ['../shared/form-page.scss', './register.scss'],
+  styleUrls: ['../../shared/styles/form-page.scss', './register.scss'],
   imports: [ReactiveFormsModule],
 })
 export class Register {

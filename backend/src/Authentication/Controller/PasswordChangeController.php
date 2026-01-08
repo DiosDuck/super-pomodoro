@@ -177,7 +177,7 @@ class PasswordChangeController extends AbstractController
     }
 
     #[Route(path: '/change-password', name: '_change-password', methods: ['POST'])]
-    #[OA\Put(
+    #[OA\Post(
         path: '/api/auth/password/change-password',
         summary: 'Change password for a logged in user',
         tags: ['Password'],
@@ -202,7 +202,7 @@ class PasswordChangeController extends AbstractController
     ): JsonResponse
     {
         if (null === $user) {
-            return $this->json(['message' => 'Forbidden', JsonResponse::HTTP_FORBIDDEN]);
+            return $this->json(['message' => 'Forbidden'], JsonResponse::HTTP_FORBIDDEN);
         }
 
         try {
@@ -212,7 +212,7 @@ class PasswordChangeController extends AbstractController
                 $changePasswordRequest->newPassword,
             );
         } catch (InvalidPasswordException) {
-            return $this->json(['message' => 'Forbidden', JsonResponse::HTTP_FORBIDDEN]);
+            return $this->json(['message' => 'Forbidden'], JsonResponse::HTTP_FORBIDDEN);
         }
 
         $this->entityManager->persist($user);

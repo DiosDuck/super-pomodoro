@@ -79,7 +79,7 @@ export class Index implements OnInit {
         this.timerStarted.set(false);
         this.sessionStarted.set(false);
       } else {
-        this.alarm().nativeElement.load();
+        this.alarm().nativeElement.currentTime = 0;
         this.alarm().nativeElement.play();
       }
     })

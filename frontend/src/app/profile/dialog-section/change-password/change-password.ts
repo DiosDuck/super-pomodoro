@@ -1,17 +1,17 @@
 import { Component, inject } from "@angular/core";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
-import { passwordMatchValidator } from "../../shared/validator/password-match";
-import { UserService } from "../../shared/services/user";
-import { ToastService } from "../../shared/services/toast";
-import { UpdateUserService } from "../profile.services";
+import { passwordMatchValidator } from "../../../shared/validator/password-match";
+import { UserService } from "../../../shared/services/user";
+import { ToastService } from "../../../shared/services/toast";
+import { UpdateUserService } from "../../profile.services";
 import { finalize, take } from "rxjs";
-import { LastRouteService } from "../../shared/services/last-route";
+import { LastRouteService } from "../../../shared/services/last-route";
 import { Router } from "@angular/router";
 
 @Component({
     selector: 'app-profile-change-password',
     templateUrl: 'change-password.html',
-    styleUrls: ['../../shared/styles/form-page.scss', 'change-password.scss'],
+    styleUrls: ['../../../shared/styles/form-page.scss', 'change-password.scss'],
     imports: [ReactiveFormsModule],
 })
 export class ChangePassword {

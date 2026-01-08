@@ -20,6 +20,8 @@
     &-sections {
         display: flex;
         flex-direction: column;
+        overflow: scroll;
+        margin-bottom: 0;
     }
 
     &-section {

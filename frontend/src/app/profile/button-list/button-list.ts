@@ -1,7 +1,7 @@
 import { Component, signal } from "@angular/core";
 import { DialogForm } from "../profile.models";
-import { ChangePassword } from "../change-password/change-password";
-import { DeleteAccount } from "../delete-account/delete-account";
+import { ChangePassword } from "../dialog-section/change-password/change-password";
+import { DeleteAccount } from "../dialog-section/delete-account/delete-account";
 
 @Component({
     selector: 'app-profile-button-list',

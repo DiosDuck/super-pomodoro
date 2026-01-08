@@ -13,7 +13,7 @@ import { cycleType } from '../../pomodoro.model';
 export class Index implements OnInit {
   counterService = inject(CounterService);
   title = inject(Title);
-  cycle = this.counterService.cycle;
+  numberOfCycles = signal<number>(0);
   cycleState = signal<cycleType>('idle');
   header = computed(
     () => {
@@ -68,6 +68,7 @@ export class Index implements OnInit {
   {
     this.counterService.cycle.subscribe((cycle) => {
       this.cycleState.set(cycle.currentCycle);
+      this.numberOfCycles.set(cycle.currentNumberOfCycle - 1);
     })
     this.counterService.remainingSeconds.subscribe((time: number) => {
       this.timer.set(time);

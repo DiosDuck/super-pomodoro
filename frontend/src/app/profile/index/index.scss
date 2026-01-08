@@ -6,8 +6,6 @@
     align-items: center;
     justify-content: center;
     gap: 5rem;
-    overflow: scroll;
-    scrollbar-width: 0;
 
     &::-webkit-scrollbar {
         display: none;

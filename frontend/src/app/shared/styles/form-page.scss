@@ -3,7 +3,6 @@
 $blue-color-1: #4ba9c8;
 $blue-color-2: color.scale($blue-color-1, $lightness: -20%);
 $blue-color-3: color.scale($blue-color-1, $lightness: 20%);
-$red-color-1: red;
 
 .form-page {
     height: 100vh;
@@ -17,6 +16,12 @@ $red-color-1: red;
         text-align: center;
         font-size: 10rem;
         color: var(--black-color-2);
+    }
+
+    &-info {
+        text-align: center;
+        font-size: 2.5rem;
+        color: var(--gray-color-1);
     }
 
     &-form {
@@ -52,7 +57,7 @@ $red-color-1: red;
 
             &--invalid {
                 border-width: 2px;
-                border-color: $red-color-1;
+                border-color: var(--red-color-2);
                 padding: calc(0.5rem - 1px);
             }
         }
@@ -110,6 +115,18 @@ $red-color-1: red;
 
                 &:hover, &:focus {
                     background-color: var(--gray-color-2);
+                }
+            }
+
+            &--danger {
+                background-color: var(--red-color-1);
+
+                &:hover, &:focus {
+                    background-color: var(--red-color-2);
+                }
+
+                &:disabled {
+                    background-color: var(--red-color-3);
                 }
             }
         }

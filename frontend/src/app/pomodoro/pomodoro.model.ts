@@ -10,8 +10,10 @@ export interface Settings extends SettingsHttp {
     type: 'pomodoro.settings',
 }
 
+export type cycleType = 'idle' | 'work' | 'short-break' | 'long-break';
+
 export interface Cycle {
-    currentCycle: 'idle' | 'work' | 'short-break' | 'long-break',
+    currentCycle: cycleType,
     currentNumberOfCycle: number,
     dateTime: Date,
     type: 'pomodoro.cycle',

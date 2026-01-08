@@ -1,6 +1,6 @@
 import { inject, Injectable, signal, Signal, WritableSignal } from '@angular/core';
 import { LocalStorageService } from '../shared/services/local-storage';
-import { Cycle, Settings, SettingsHttp } from './pomodoro.model';
+import { Cycle, cycleType, Settings, SettingsHttp } from './pomodoro.model';
 import { BehaviorSubject, firstValueFrom, interval, Observable, ReplaySubject, Subject, switchMap, take, takeUntil, takeWhile } from 'rxjs';
 import { UserService } from '../shared/services/user';
 import { HttpClient } from '@angular/common/http';
@@ -150,22 +150,58 @@ export class SettingsService {
   }
 }
 
-@Injectable({
-  providedIn: 'root'
-})
-export class StorageService {
-  private _localStorageService = inject(LocalStorageService);
+export class CycleService {
+  private _cycle: BehaviorSubject<Cycle>;
+  cycle: Observable<Cycle>;
+
   private readonly _cycleKey = 'pomodoro.cycle';
 
-  public setCycle(cycle: Cycle): void
-  {
-    this._localStorageService.parseAndSet(
-      this._cycleKey,
-      cycle
-    );
+  constructor(
+    private readonly _localStorageService: LocalStorageService,
+  ) {
+    this._cycle = new BehaviorSubject(this._loadCycle());
+    this.cycle = this._cycle.asObservable();
+    this.cycle.subscribe((cycle) => this._setCycle(cycle));
   }
 
-  public getCycle(): Cycle
+  reset(): void 
+  {
+    this._cycle.next(this._createNewCycle());
+  }
+
+  next(settings : Settings): void 
+  {
+    let cycle = this._cycle.value;
+    if (cycle.currentCycle !== 'work') {
+      cycle.currentCycle = 'work';
+    } else {
+      if (cycle.currentNumberOfCycle % settings.cyclesBeforeLongBreak === 0) {
+        cycle.currentCycle = 'long-break';
+      } else {
+        cycle.currentCycle = 'short-break';
+      }
+
+      cycle.currentNumberOfCycle += 1;
+    }
+
+    this._cycle.next(cycle);
+  }
+
+  start(): void 
+  {
+    let cycle = this._cycle.value;
+    if (cycle.currentCycle === 'idle') {
+      cycle.currentCycle = 'work';
+      this._cycle.next(cycle);
+    }
+  }
+
+  getCycleType(): cycleType
+  {
+    return this._cycle.value.currentCycle;
+  }
+
+  private _loadCycle(): Cycle
   {
     let data = this._localStorageService.getJsonParsed(this._cycleKey);
     if (data !== null && 'type' in data && data.type === this._cycleKey) {
@@ -174,15 +210,15 @@ export class StorageService {
         dateTime: new Date(data.dateTime),
       };
       
-      if (this.isValidCycle(convertedData)) {
-        return data;
+      if (this._isValidCycle(convertedData)) {
+        return convertedData;
       }
     }
 
-    return this.createNewCycle();
+    return this._createNewCycle();
   }
 
-  private createNewCycle(): Cycle
+  private _createNewCycle(): Cycle
   {
     let cycle: Cycle = {
       currentCycle: 'idle',
@@ -190,43 +226,22 @@ export class StorageService {
       dateTime: new Date(),
       type: this._cycleKey,
     };
-    this.setCycle(cycle);
+    this._setCycle(cycle);
     return cycle;
   }
 
-  private isValidCycle(cycle: Cycle): boolean
+  private _isValidCycle(cycle: Cycle): boolean
   {
     let date = new Date();
     return date.getDate() === cycle.dateTime.getDate();
   }
-}
 
-@Injectable({
-  providedIn: 'root'
-})
-export class HandleCounterService {
-  next(cycle: Cycle, sessionNumber: number): Cycle
+  public _setCycle(cycle: Cycle): void
   {
-    if (cycle.currentCycle !== 'work') {
-      cycle.currentCycle = 'work';
-      cycle.currentNumberOfCycle++;
-      return cycle;
-    }
-
-    if (cycle.currentNumberOfCycle % sessionNumber === 0) {
-      cycle.currentCycle = 'long-break';
-    } else {
-      cycle.currentCycle = 'short-break';
-    }
-
-    return cycle;
-  }
-
-  reset(cycle: Cycle): Cycle
-  {
-    cycle.currentCycle = 'idle';
-    cycle.currentNumberOfCycle = 0;
-    return cycle;
+    this._localStorageService.parseAndSet(
+      this._cycleKey,
+      cycle
+    );
   }
 }
 
@@ -234,8 +249,7 @@ export class HandleCounterService {
   providedIn: 'root'
 })
 export class CounterService {
-  private _cycle: WritableSignal<Cycle>;
-  public cycle: Signal<Cycle>;
+  public cycle: Observable<Cycle>;
   private _waitingConfirmation: WritableSignal<boolean>;
   public waitingConfirmation: Signal<boolean>;
 
@@ -247,11 +261,10 @@ export class CounterService {
   public finish: Observable<void>;
 
   constructor(
-    private _storageService: StorageService,
+    private _cycleService: CycleService,
     private _settingService: SettingsService,
   ) {
-    this._cycle = signal(this._storageService.getCycle());
-    this.cycle = this._cycle.asReadonly();
+    this.cycle = this._cycleService.cycle;
     this._waitingConfirmation = signal(false);
     this.waitingConfirmation = this._waitingConfirmation.asReadonly();
 
@@ -270,14 +283,7 @@ export class CounterService {
 
   async pomodoroStart() : Promise<void> 
   {
-    if (this._cycle().currentCycle === 'idle') {
-      this._cycle.set({
-        ...this._cycle(),
-        currentCycle: 'work',
-      });
-      this._storageService.setCycle(this._cycle());
-    }
-
+    this._cycleService.start();
     let setting = await this._settingService.getSettings();
     this._start(this._getSeconds(setting));
   }
@@ -303,13 +309,7 @@ export class CounterService {
   {
     this.pomodoroStop();
     let setting = await this._settingService.getSettings();
-    this._cycle.set({
-      currentCycle: 'idle',
-      currentNumberOfCycle: 1,
-      dateTime: new Date(),
-      type: 'pomodoro.cycle',
-    });
-    this._storageService.setCycle(this._cycle());
+    this._cycleService.reset();
     this._remainingSeconds.next(this._getSeconds(setting));
     this._waitingConfirmation.set(false);
   }
@@ -329,28 +329,10 @@ export class CounterService {
   {
     this.pomodoroStop();
     let settings = await this._settingService.getSettings();
-
-    if (this._cycle().currentCycle !== 'work') {
-      this._cycle.set({
-        ...this._cycle(),
-        currentCycle: 'work',
-      })
-    } else if (this._cycle().currentNumberOfCycle % settings.cyclesBeforeLongBreak === 0) {
-      this._cycle.set({
-        ...this._cycle(),
-        currentCycle: 'long-break',
-        currentNumberOfCycle: this._cycle().currentNumberOfCycle + 1,
-      });
-    } else {
-      this._cycle.set({
-        ...this._cycle(),
-        currentCycle: 'short-break',
-        currentNumberOfCycle: this._cycle().currentNumberOfCycle + 1,
-      });
-    }
+    
+    this._cycleService.next(settings);
 
     this._waitingConfirmation.set(false);
-    this._storageService.setCycle(this._cycle());
     this._remainingSeconds.next(this._getSeconds(settings));
   }
 
@@ -358,7 +340,7 @@ export class CounterService {
   {
     let time: number;
 
-    switch (this._cycle().currentCycle) {
+    switch (this._cycleService.getCycleType()) {
       case 'idle':
       case 'work':
         time = settings.workTime;

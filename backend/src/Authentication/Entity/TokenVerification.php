@@ -27,7 +27,7 @@ class TokenVerification
     private ?\DateTimeImmutable $expiresAt = null;
 
     #[ORM\Column(enumType: TokenTypeEnum::class, length: 50)]
-    private ?TokenTypeEnum $type;
+    private ?TokenTypeEnum $type = null;
 
     #[ORM\Column(name: 'is_used')]
     private ?bool $isUsed = null;

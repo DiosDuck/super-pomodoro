@@ -2,6 +2,7 @@ import { Component, computed, ElementRef, inject, OnInit, signal, viewChild } fr
 import { CounterService } from '../../pomodoro.services';
 import { RouterLink } from "@angular/router";
 import { Title } from '@angular/platform-browser';
+import { cycleType } from '../../pomodoro.model';
 
 @Component({
   selector: 'app-pomodoro-index',
@@ -13,13 +14,14 @@ export class Index implements OnInit {
   counterService = inject(CounterService);
   title = inject(Title);
   cycle = this.counterService.cycle;
+  cycleState = signal<cycleType>('idle');
   header = computed(
     () => {
       if (this.isWaitingFormConfirmation()) {
         return 'Continue?'
       }
 
-      switch (this.cycle().currentCycle) {
+      switch (this.cycleState()) {
         case 'idle':
           return 'Welcome to pomodoro!';
         case 'work':
@@ -45,7 +47,7 @@ export class Index implements OnInit {
       if (this.isWaitingFormConfirmation()) {
         start = 'Confirm';
       } else {
-        switch (this.cycle().currentCycle) {
+        switch (this.cycleState()) {
           case 'idle':
             return 'Pomodoro';
           case 'work':
@@ -64,6 +66,9 @@ export class Index implements OnInit {
 
   ngOnInit(): void 
   {
+    this.counterService.cycle.subscribe((cycle) => {
+      this.cycleState.set(cycle.currentCycle);
+    })
     this.counterService.remainingSeconds.subscribe((time: number) => {
       this.timer.set(time);
       this.title.setTitle(this.titleValue());

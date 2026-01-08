@@ -6,6 +6,7 @@ namespace App\Pomodoro\Repository;
 
 use App\Authentication\Entity\User;
 use App\Pomodoro\Entity\SessionSaved;
+use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -28,6 +29,17 @@ class SessionSavedRepository extends ServiceEntityRepository
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult()
+        ;
+    }
+
+    public function deleteAllOldSessions(string $oldString = '-8 days'): int
+    {
+        return $this->createQueryBuilder('s')
+            ->delete()
+            ->where('s.createdAt <= :createdAt')
+            ->setParameter('createdAt', new DateTimeImmutable($oldString))
+            ->getQuery()
+            ->execute()
         ;
     }
 }

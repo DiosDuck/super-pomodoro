@@ -412,36 +412,35 @@ export class CounterService {
   providedIn: 'root'
 })
 export class WorkSessionHttpService {
-  private _userService = inject(UserService);
-  private _toastService = inject(ToastService);
-  private _http = inject(HttpClient);
+  private _isLoggedIn : boolean;
+
+  constructor(
+    private readonly _userService : UserService,
+    private readonly _toastService : ToastService,
+    private readonly _http : HttpClient,
+  ) {
+    this._isLoggedIn = false;
+    this._userService.user.subscribe(
+      (user) => this._isLoggedIn = (user !== null)
+    );
+  }
 
   saveNewToastService(workTime : number) {
-    this._userService.user
-      .pipe(
-        take(1),
-      )
-      .subscribe(
-        (user) => {
-          if (user === null) {
-            return;
+    if (this._isLoggedIn) {
+      this._http.put(
+          '/api/pomodoro/session',
+          {
+            workTime: workTime,
           }
-
-          this._http.put(
-              '/api/pomodoro/session',
-              {
-                workTime: workTime,
-              }
-            )
-            .pipe(
-              take(1),
-            )
-            .subscribe({
-              next: () => this._toastService.addToast('Saved to your profile', 'note'),
-              error: () => this._toastService.addToast('There has been an error saving', 'error'),
-            })
-        }
-      )
-    ;
+        )
+        .pipe(
+          take(1),
+        )
+        .subscribe({
+          next: () => this._toastService.addToast('Saved to your profile', 'note'),
+          error: () => this._toastService.addToast('There has been an error saving', 'error'),
+        })
+      ;
+    }
   }
 }

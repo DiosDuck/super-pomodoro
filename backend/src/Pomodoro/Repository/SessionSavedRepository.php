@@ -25,6 +25,7 @@ class SessionSavedRepository extends ServiceEntityRepository
             ->andWhere('s.user = :user')
             ->setParameter('user', $user)
             ->orderBy('s.createdAt', 'DESC')
+            ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult()
         ;

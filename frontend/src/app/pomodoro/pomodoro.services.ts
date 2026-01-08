@@ -1,4 +1,4 @@
-import { Injectable, signal, Signal, WritableSignal } from '@angular/core';
+import { inject, Injectable, signal, Signal, WritableSignal } from '@angular/core';
 import { LocalStorageService } from '../shared/services/local-storage';
 import { Cycle, cycleType, Settings, SettingsHttp } from './pomodoro.model';
 import { BehaviorSubject, firstValueFrom, interval, Observable, ReplaySubject, Subject, switchMap, take, takeUntil, takeWhile } from 'rxjs';
@@ -161,6 +161,7 @@ export class CycleService {
 
   constructor(
     private readonly _localStorageService: LocalStorageService,
+    private readonly _workSessionHttpService: WorkSessionHttpService,
   ) {
     this._cycle = new BehaviorSubject(this._loadCycle());
     this.cycle = this._cycle.asObservable();
@@ -185,6 +186,7 @@ export class CycleService {
       }
 
       cycle.currentNumberOfCycle += 1;
+      this._workSessionHttpService.saveNewToastService(settings.workTime);
     }
 
     this._cycle.next(cycle);
@@ -403,5 +405,43 @@ export class CounterService {
           this.pomodoroReset();
         }
       });
+  }
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class WorkSessionHttpService {
+  private _userService = inject(UserService);
+  private _toastService = inject(ToastService);
+  private _http = inject(HttpClient);
+
+  saveNewToastService(workTime : number) {
+    this._userService.user
+      .pipe(
+        take(1),
+      )
+      .subscribe(
+        (user) => {
+          if (user === null) {
+            return;
+          }
+
+          this._http.put(
+              '/api/pomodoro/session',
+              {
+                workTime: workTime,
+              }
+            )
+            .pipe(
+              take(1),
+            )
+            .subscribe({
+              next: () => this._toastService.addToast('Saved to your profile', 'note'),
+              error: () => this._toastService.addToast('There has been an error saving', 'error'),
+            })
+        }
+      )
+    ;
   }
 }

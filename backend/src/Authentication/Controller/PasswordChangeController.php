@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Authentication\Controller;
 
+use App\Authentication\DTO\ChangePasswordRequestDTO;
 use App\Authentication\DTO\ResetPasswordTokenRequestDTO;
+use App\Authentication\Entity\User;
 use App\Authentication\Enum\TokenTypeEnum;
+use App\Authentication\Exception\InvalidPasswordException;
 use App\Authentication\Exception\InvalidTokenException;
 use App\Authentication\Exception\UserNotFoundException;
 use App\Authentication\Service\AuthenticationService;
@@ -21,10 +24,16 @@ use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\BodyRendererInterface;
 use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 #[Route(path: '/api/auth/password', name: 'api_auth_password_')]
 class PasswordChangeController extends AbstractController
 {
+    public function __construct(
+        private readonly AuthenticationService $authenticationService,
+        private readonly EntityManagerInterface $entityManager,
+    ) { }
+
     #[Route(path: '/forgot-password', name: '_forgot-password', methods: ['PUT'])]
     #[OA\Put(
         path: '/api/auth/password/forgot-password',
@@ -60,8 +69,6 @@ class PasswordChangeController extends AbstractController
     )]
     public function forgotPassword(
         Request $request,
-        AuthenticationService $authenticationService,
-        EntityManagerInterface $entityManager,
         string $frontendBaseUrl,
         RateLimiterFactoryInterface $registerAccountLimiter,
         MailerInterface $mailer,
@@ -69,7 +76,7 @@ class PasswordChangeController extends AbstractController
     ): JsonResponse 
     {
         try {
-            $user = $authenticationService->getUserByUsername(json_decode($request->getContent(), true)['username'] ?? '');
+            $user = $this->authenticationService->getUserByUsername(json_decode($request->getContent(), true)['username'] ?? '');
         } catch (UserNotFoundException) {
             return $this->json(
                 ['message' => 'Not Found'],
@@ -85,13 +92,13 @@ class PasswordChangeController extends AbstractController
             );
         }
 
-        $createdToken = $authenticationService->createToken(
+        $createdToken = $this->authenticationService->createToken(
             TokenTypeEnum::TOKEN_RESET_PASSWORD,
             $user,
         );
 
-        $entityManager->persist($createdToken->tokenVerification);
-        $entityManager->flush();
+        $this->entityManager->persist($createdToken->tokenVerification);
+        $this->entityManager->flush();
         $queryParam = http_build_query(
             [
                 'token' => $createdToken->unhashedToken, 
@@ -141,12 +148,10 @@ class PasswordChangeController extends AbstractController
     )]
     public function resetPassword(
         #[MapRequestPayload] ResetPasswordTokenRequestDTO $resetPasswordTokenRequest,
-        AuthenticationService $authenticationService,
-        EntityManagerInterface $entityManager,
     ): JsonResponse
     {
         try {
-            $token = $authenticationService->getValidTokenForUser(
+            $token = $this->authenticationService->getValidTokenForUser(
                 $resetPasswordTokenRequest->id,
                 TokenTypeEnum::TOKEN_RESET_PASSWORD,
                 $resetPasswordTokenRequest->token,
@@ -158,13 +163,60 @@ class PasswordChangeController extends AbstractController
             );
         }
 
-        $user = $authenticationService->updatePasswordForUser(
+        $user = $this->authenticationService->updatePasswordForUser(
             $token->getUser(),
             $resetPasswordTokenRequest->newPassword
         );
 
-        $entityManager->persist($user);
-        $entityManager->flush();
+        $token->setIsUsed(true);
+        $this->entityManager->persist($token);
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+
+        return $this->json(['message' => 'ok']);
+    }
+
+    #[Route(path: '/change-password', name: '_change-password', methods: ['POST'])]
+    #[OA\Put(
+        path: '/api/auth/password/change-password',
+        summary: 'Change password for a logged in user',
+        tags: ['Password'],
+        security: [['Bearer' => []]],
+    )]
+    #[OA\RequestBody(
+        content: new OA\JsonContent(
+            ref: new Model(type: ChangePasswordRequestDTO::class),
+        )
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Password has been changed',
+    )]
+    #[OA\Response(
+        response: 403,
+        description: 'User not logged in or invalid password',
+    )]
+    public function changePassword(
+        #[CurrentUser] ?User $user,
+        #[MapRequestPayload] ChangePasswordRequestDTO $changePasswordRequest,
+    ): JsonResponse
+    {
+        if (null === $user) {
+            return $this->json(['message' => 'Forbidden', JsonResponse::HTTP_FORBIDDEN]);
+        }
+
+        try {
+            $user = $this->authenticationService->changePassword(
+                $user,
+                $changePasswordRequest->password,
+                $changePasswordRequest->newPassword,
+            );
+        } catch (InvalidPasswordException) {
+            return $this->json(['message' => 'Forbidden', JsonResponse::HTTP_FORBIDDEN]);
+        }
+
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
 
         return $this->json(['message' => 'ok']);
     }

@@ -9,6 +9,7 @@ use App\Authentication\DTO\RegisterUserDTO;
 use App\Authentication\Entity\TokenVerification;
 use App\Authentication\Entity\User;
 use App\Authentication\Enum\TokenTypeEnum;
+use App\Authentication\Exception\InvalidPasswordException;
 use App\Authentication\Exception\InvalidRegisterDataException;
 use App\Authentication\Exception\InvalidTokenException;
 use App\Authentication\Exception\UserNotFoundException;
@@ -116,5 +117,20 @@ class AuthenticationService {
             tokenVerification: $tokenVerification,
             unhashedToken: $token,
         );
+    }
+
+    /**
+     * @throws InvalidPasswordException
+     */
+    public function changePassword(User $user, string $oldPassword, string $newPassword): User
+    {
+        if (!$this->passwordHasher->isPasswordValid($user, $oldPassword)) {
+            throw new InvalidPasswordException();
+        }
+
+        $hashedPassword = $this->passwordHasher->hashPassword($user, $newPassword);
+        $user->setPassword($hashedPassword);
+
+        return $user;
     }
 }

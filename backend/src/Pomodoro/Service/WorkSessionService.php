@@ -7,6 +7,7 @@ namespace App\Pomodoro\Service;
 use App\Authentication\Entity\User;
 use App\Pomodoro\Repository\SessionSavedRepository;
 use App\Pomodoro\Repository\SettingsRepository;
+use DateInterval;
 use DateTimeImmutable;
 
 class WorkSessionService {
@@ -22,7 +23,7 @@ class WorkSessionService {
             return false;
         }
 
-        $sessionSaved = $this->sessionSavedRepository->getLastWorkSession($user);
+        $sessionSaved = $this->sessionSavedRepository->findLastWorkSession($user);
         if (null === $sessionSaved) {
             return true;
         }
@@ -31,5 +32,25 @@ class WorkSessionService {
         $diff = $now->getTimestamp() - $sessionSaved->getCreatedAt()->getTimestamp();
 
         return $diff >= $workTime;
+    }
+
+    public function getHistoryForAWeek(User $user, int $lastDayTimestamp): array
+    {
+        $lastDay = new DateTimeImmutable(
+            sprintf('@%d', intval($lastDayTimestamp / 1000))
+        );
+
+        $dayInterval = DateInterval::createFromDateString('1 day');
+        $list = [];
+
+        for ($i = 0; $i < 7; $i++) {
+            $list[] = $this->sessionSavedRepository->getSessionHistoryForADay(
+                $user, $lastDay
+            );
+
+            $lastDay = $lastDay->sub($dayInterval);
+        }
+
+        return $list;
     }
 }

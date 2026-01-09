@@ -1,0 +1,23 @@
+<div class="session-chart">
+    <h3 class="session-chart-title">Last 7 days</h3>
+    <div class="session-chart-table">
+        @for (chartRow of chartList; track $index) {
+            <div class="session-chart-table__column">
+                <div class="session-chart-table__column--label">
+                    {{ chartRow.text }}
+                </div>
+                <div 
+                    class="session-chart-table__column--block" 
+                    [style.height]="'calc(' + (chartRow.heigth * 12 / maxHeight) + 'rem)'">
+                </div>
+            </div>
+        }
+    </div>
+    <div class="session-chart-footer">
+        @for (chartRow of chartList; track $index) {
+            <div class="session-chart-footer__date">
+                {{ chartRow.date | date: 'YYY-MM-dd' }}
+            </div>
+        }
+    </div>
+</div>

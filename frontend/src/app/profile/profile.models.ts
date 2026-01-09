@@ -12,6 +12,18 @@ export interface ChartRow {
     date: Date,
 }
 
+export interface WorkTimeHistoryResponse {
+    workTimeTotal: number,
+    sessionAmount: number,
+    timestamp: number,
+}
+
+export interface WorkTimeHistory {
+    workTimeTotal: number,
+    sessionAmount: number,
+    date: Date,
+}
+
 export const TEST_CHART_ROW_LIST : ChartRowResponse[] = [
     {
         heigth: 5,

@@ -1,6 +1,7 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { Observable } from "rxjs";
+import { WorkTimeHistoryResponse } from "./profile.models";
 
 @Injectable({
     providedIn: 'root'
@@ -28,6 +29,25 @@ export class UpdateUserService {
                     password: password
                 }
             },
+        );
+    }
+}
+
+export class WorkSessionHistoryService {
+    private _http = inject(HttpClient);
+
+    getHistory() : Observable<WorkTimeHistoryResponse[]>
+    {
+        let date = new Date();
+        date.setHours(0, 0, 0, 0);
+        
+        let params = new HttpParams();
+
+        return this._http.get<WorkTimeHistoryResponse[]>(
+            `/api/pomodoro/session/history`,
+            {
+                params: params.append('timestamp', date.getTime())
+            }
         );
     }
 }

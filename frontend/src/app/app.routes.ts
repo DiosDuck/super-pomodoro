@@ -4,7 +4,7 @@ import { adminGuard, signedGuard } from './shared/guards/user-state';
 export const routes: Routes = [
     {
         path: 'status',
-        canMatch: [adminGuard],
+        canActivate: [adminGuard],
         title: 'Status page',
         loadComponent: () => import('./status/index/index').then(m => m.Index),
     },

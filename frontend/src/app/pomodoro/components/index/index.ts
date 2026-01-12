@@ -1,4 +1,4 @@
-import { Component, computed, ElementRef, inject, OnInit, signal, viewChild } from '@angular/core';
+import { Component, computed, ElementRef, inject, OnDestroy, OnInit, signal, viewChild } from '@angular/core';
 import { CounterService } from '../../pomodoro.services';
 import { RouterLink } from "@angular/router";
 import { Title } from '@angular/platform-browser';
@@ -10,7 +10,7 @@ import { cycleType } from '../../pomodoro.model';
   templateUrl: './index.html',
   styleUrl: './index.scss'
 })
-export class Index implements OnInit {
+export class Index implements OnInit, OnDestroy {
   counterService = inject(CounterService);
   title = inject(Title);
   numberOfCycles = signal<number>(0);
@@ -83,6 +83,10 @@ export class Index implements OnInit {
         this.alarm().nativeElement.play();
       }
     })
+  }
+
+  ngOnDestroy(): void {
+    this.counterService.pomodoroRewind();
   }
 
   async onStart(): Promise<void>

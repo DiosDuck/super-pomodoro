@@ -44,8 +44,11 @@ class WorkSessionService {
         $list = [];
 
         for ($i = 0; $i < 7; $i++) {
-            $list[] = $this->sessionSavedRepository->getSessionHistoryForADay(
-                $user, $lastDay
+            array_unshift(
+                $list,
+                $this->sessionSavedRepository->getSessionHistoryForADay(
+                    $user, $lastDay
+                ),
             );
 
             $lastDay = $lastDay->sub($dayInterval);

@@ -33,6 +33,9 @@ export class UpdateUserService {
     }
 }
 
+@Injectable({
+    providedIn: 'root',
+})
 export class WorkSessionHistoryService {
     private _http = inject(HttpClient);
 

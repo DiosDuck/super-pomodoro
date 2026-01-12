@@ -3,32 +3,25 @@ import { CanActivateChildFn, CanActivateFn } from "@angular/router";
 import { UserService } from "../services/user";
 import { filter, map, take } from "rxjs";
 
+const waitUser = (userService : UserService) => 
+    userService.user.pipe(filter(user => undefined !== user), take(1));
+
 export const unsignedGuard: CanActivateChildFn = () => {
     const userService = inject(UserService);
 
-    return userService.user.pipe(
-        filter(user => undefined !== user),
-        take(1),
-        map(user => user === null),
-    );
+    return waitUser(userService).pipe(map(user => user === null));
 }
 
 export const signedGuard: CanActivateChildFn = () => {
     const userService = inject(UserService);
 
-    return userService.user.pipe(
-        filter(user => undefined !== user),
-        take(1),
-        map(user => user !== null),
-    );
+    return waitUser(userService).pipe(map(user => user !== null));
 }
 
 export const adminGuard: CanActivateFn = () => {
     const userService = inject(UserService);
     
-    return userService.user.pipe(
-        filter(user => undefined !== user),
-        take(1),
-        map(user => user !== null && user.roles.includes("ROLE_ADMIN")),
+    return waitUser(userService).pipe(
+        map(user =>  user !== null && user.roles.includes("ROLE_ADMIN"))
     );
 }

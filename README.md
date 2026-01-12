@@ -1,5 +1,9 @@
 # Super Pomodoro
 
+## IMPORTANT
+
+This project will be archived, will be replaced with another one to separate BE, FE and the local configurations.
+
 ## Requirements
 
 Docker desktop
